@@ -1,0 +1,35 @@
+{
+  "extName": {
+    "message": "Extentie"
+  },
+
+  "extDesc": {
+    "message": "Beautiful and Simple Chrome Extension Manager"
+  },
+
+  "extDefaultTitle": {
+    "message": "Manage Extensions"
+  },
+
+  "extensions": {
+    "message": "Extensions"
+  },
+
+  "applications": {
+    "message": "Applications"
+  },
+
+  "themes": {
+    "message": "Themes"
+  },
+
+  "gotoWebStore": {
+    "message": "More Extensions"
+  },
+
+  "gotoExtension": {
+    "message": "Manage Extensions"
+  }
+
+
+}

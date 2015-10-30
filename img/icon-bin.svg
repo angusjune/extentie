@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="12px" height="16px" viewBox="0 0 12 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4 (15575) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-bin</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Artboard-5" sketch:type="MSArtboardGroup" transform="translate(-357.000000, -78.000000)">
+            <g id="icon-bin" sketch:type="MSLayerGroup" transform="translate(355.000000, 78.000000)">
+                <rect id="Rectangle-10" sketch:type="MSShapeGroup" x="0" y="0" width="16" height="16"></rect>
+                <path d="M14,0.984375 L14,3 L2,3 L2,0.984375 L5.22818792,0.984375 L6.18791946,0 L9.81208054,0 L10.7718121,0.984375 L14,0.984375 Z M3,4 L13,4 L13,14.2742475 C13,14.7290992 12.8138038,15.1304332 12.4414062,15.4782609 C12.0690087,15.8260886 11.6393253,16 11.1523438,16 L4.84765625,16 C4.3606747,16 3.93099132,15.8260886 3.55859375,15.4782609 C3.18619618,15.1304332 3,14.7290992 3,14.2742475 L3,4 Z" id="Shape" fill="#828282" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
+</svg>

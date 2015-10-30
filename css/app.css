@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #fdfdfd;
+  color: #333;
+  font-family: "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+  width: 320px;
+  height: 500px;
+  -webkit-user-drag: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2 {
+  margin: 0;
+}
+
+small {
+  color: #666;
+}
+
+.group {
+  display: none;
+}
+
+.group.show {
+  display: block;
+}
+
+.header {
+  padding: 10px 0;
+  margin: 0 10px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #D8D8D8;
+  cursor: default;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
+.sub-title {
+  font-size: 1.2rem;
+  font-weight: normal;
+
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  transition: all ease-out 0.2s;
+
+}
+
+.list li:hover,
+.list li:focus {
+  background-color: #D8EAFF;
+}
+
+.list li.disabled {
+  -webkit-filter: saturate(0);
+}
+
+.list li.development {
+  background-color: #FFF3B1;
+}
+
+.list li.development:hover,
+.list li.development:focus {
+  background-color: #FFE865;
+}
+
+.list-label {
+  flex-grow: 1;
+  padding-left: 2.2rem;
+  overflow: hidden;
+  white-space: nowrap;
+	text-overflow: ellipsis;
+  line-height: 1;
+  -webkit-user-select: none;
+}
+
+.list-action {
+  display: flex;
+  justify-content: space-between;
+}
+
+.label-img {
+  width: 16px;
+  height: 16px;
+  vertical-align: bottom;
+  margin-right: 5px;
+}
+
+.action-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 0 5px;
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition: opacity ease-out 0.15s;
+}
+
+.delete {
+  background-image: url(/img/icon-bin.svg);
+  visibility: hidden;
+}
+
+.option {
+  background-image: url(/img/icon-cog.svg);
+  opacity: 0.8;
+}
+
+.action-icon.placehold {
+  cursor: default;
+}
+
+.open {
+  background-image: url(/img/icon-open.svg);
+}
+
+.list li:hover .delete,
+.list li:focus .delete {
+  visibility: visible;
+  opacity: 0.8;
+}
+
+.option:hover,
+.option:focus,
+.delete:hover,
+.delete:focus {
+  opacity: 1 !important;
+}
+
+.control-indicator {
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.control input:checked ~ .control-indicator {
+
+}
+
+.control input:focus ~ .control-indicator {
+  box-shadow: none;
+}
