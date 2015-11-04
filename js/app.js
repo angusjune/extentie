@@ -136,8 +136,6 @@ chrome.management.getAll(function(result){
     $('#countExt').text(extCount);
     $('#countApp').text(appCount);
 
-    // $subtitleExt.html(extEnabledCount + '<small>/' + extCount + '</small>');
-    // $subtitleApp.html(appEnabledCount + '<small>/' + appCount + '</small>');
   }
 });
 
