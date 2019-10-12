@@ -1,19 +1,22 @@
-// if you checked "fancy-settings" in extensionizr.com, uncomment this lines
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches; // OS set to dark mode
+const isIncognito = chrome.extension.inIncognitoContext; // Chrome is in incognito context
 
-// var settings = new Store("settings", {
-//     "sample_setting": "This is how you use Store.js to remember values"
-// });
 
-var webstoreUrl  = 'https://chrome.google.com/webstore/category/extensions';
-var extensionUrl = 'chrome://extensions/';
+if (isDarkMode || isIncognito) {
+    // set light-colored icon in dark UI
+    chrome.browserAction.setIcon({ path: `/icons/icon96-light.png`});
+}
 
-var mGotoWebStore  = chrome.i18n.getMessage('gotoWebStore');
-var mGotoExtension = chrome.i18n.getMessage('gotoExtension');
+const webstoreUrl  = 'https://chrome.google.com/webstore/category/extensions';
+const extensionUrl = 'chrome://extensions/';
+
+const mGotoWebStore  = chrome.i18n.getMessage('gotoWebStore');
+const mGotoExtension = chrome.i18n.getMessage('gotoExtension');
 
 chrome.contextMenus.create({
   "title": mGotoExtension,
   "contexts": ["browser_action"],
-  "onclick": function(){
+  "onclick": () => {
     chrome.tabs.create({ url: extensionUrl });
   }
 });
@@ -21,7 +24,7 @@ chrome.contextMenus.create({
 chrome.contextMenus.create({
   "title": mGotoWebStore,
   "contexts": ["browser_action"],
-  "onclick": function(){
+  "onclick": () => {
     chrome.tabs.create({ url: webstoreUrl });
   }
 });
