@@ -5,6 +5,7 @@ const isIncognito = chrome.extension.inIncognitoContext; // Chrome is in incogni
 if (isDarkMode || isIncognito) {
     // set light-colored icon in dark UI
     chrome.browserAction.setIcon({ path: `/icons/icon96-light.png`});
+    console.log('Dark UI activated', isDarkMode, isIncognito);
 }
 
 const webstoreUrl  = 'https://chrome.google.com/webstore/category/extensions';

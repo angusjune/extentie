@@ -1,4 +1,4 @@
-var _m = chrome.i18n.getMessage;
+const _m = chrome.i18n.getMessage;
 
 var $groupExt   = $('#groupExt');
 var $groupApp   = $('#groupApp');
