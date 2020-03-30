@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<meta charset="UTF-8" />
-<link rel="stylesheet" href="/css/wtf-forms.css" />
-<link rel="stylesheet" href="/css/app.css" />
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="/css/wtf-forms.css"/>
+<link rel="stylesheet" href="/css/app.css"/>
+
+<div class="search" role="search" id="searchBox">
+  <div class="search__textfield">
+    <input class="input input--search" autocomplete="off" id="search" autofocus>
+    <div class="search__textfield__leading-icon"></div>
+  </div>
+</div>
 
 <section class="group" id="groupExt">
   <hgroup class="header">
@@ -26,7 +33,8 @@
 <section class="group" id="groupTheme">
   <hgroup class="header">
     <h1 class="title" id="titleTheme">Themes</h1>
-    <h2 class="sub-title"><span id="countTheme"></span></h2>
+    <h2 class="sub-title">
+      <span id="countTheme"></span></h2>
   </hgroup>
   <ul class="list"></ul>
 </section>

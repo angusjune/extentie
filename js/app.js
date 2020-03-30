@@ -1,18 +1,18 @@
 const _m = chrome.i18n.getMessage;
 
-var $groupExt   = $('#groupExt');
-var $groupApp   = $('#groupApp');
+var $groupExt = $('#groupExt');
+var $groupApp = $('#groupApp');
 var $groupTheme = $('#groupTheme');
-var $subtitleExt   = $groupExt.find('.sub-title');
-var $subtitleApp   = $groupApp.find('.sub-title');
+var $subtitleExt = $groupExt.find('.sub-title');
+var $subtitleApp = $groupApp.find('.sub-title');
 var $subtitleTheme = $groupTheme.find('.sub-title');
-var $listExt   = $groupExt.find('.list');
-var $listApp   = $groupApp.find('.list');
+var $listExt = $groupExt.find('.list');
+var $listApp = $groupApp.find('.list');
 var $listTheme = $groupTheme.find('.list');
 
 var getIcon = function (iconArray) {
   var url;
-  iconArray.reverse().forEach(function(t) {
+  iconArray.reverse().forEach(function (t) {
     if (t.size > 16) {
       url = t.url;
     }
@@ -20,7 +20,14 @@ var getIcon = function (iconArray) {
   return url;
 }
 
-chrome.management.getAll(function(result){
+const appendList = result => {
+  $listExt.html('');
+  $listApp.html('');
+  $listTheme.html('');
+  $groupExt.removeClass('show');
+  $groupApp.removeClass('show');
+  $groupTheme.removeClass('show');
+
   if (result) {
     var extCount = 0;
     var appCount = 0;
@@ -28,7 +35,26 @@ chrome.management.getAll(function(result){
     var extEnabledCount = 0;
     var appEnabledCount = 0;
 
-    result.forEach(function(t, i) {
+    result.sort((a, b) => {
+      let nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      let nameB = b.name.toUpperCase(); // ignore upper and lowercase
+
+      if ((a.enabled && b.enabled) || (!a.enabled && !b.enabled)) {
+        if (nameA < nameB) {
+          return -1;
+        }
+        return 1;
+      } else if (!a.enabled) {
+        return 1;
+      } else if (!b.enabled) {
+        return -1;
+      }
+
+      // names must be equal
+      return 0;
+    });
+
+    result.forEach(function (t, i) {
       var id = t.id;
       var name = t.name;
       var description = t.description;
@@ -51,9 +77,11 @@ chrome.management.getAll(function(result){
       if (optionsUrl) {
         var iconOption = $('<a>').addClass('action-icon option').prependTo(listAction);
 
-        iconOption.click(function(e) {
+        iconOption.click(function (e) {
           e.preventDefault();
-          chrome.tabs.create({url: optionsUrl});
+          chrome.tabs.create({
+            url: optionsUrl
+          });
         });
       } else {
         var iconplacehold = $('<a>').addClass('action-icon placehold').prependTo(listAction);
@@ -61,22 +89,25 @@ chrome.management.getAll(function(result){
 
       var iconDelete = $('<a>').addClass('action-icon delete').prependTo(listAction);
 
-      iconDelete.click(function(e) {
+      iconDelete.click(function (e) {
         e.preventDefault();
         chrome.management.uninstall(id);
       });
 
 
-      var listLabel  = $('<label>').addClass('control checkbox list-label').append($('<span class="control-indicator">')).prependTo(list);
+      var listLabel = $('<label>').addClass('control checkbox list-label').append($('<span class="control-indicator">')).prependTo(list);
 
       var labelContent = $('<span>').addClass('label-content').html(name).attr('title', description).prependTo(listLabel);
       var labelImg = $('<img>').addClass('label-img').attr('src', icon).prependTo(labelContent);
 
-      var checkbox = $('<input>').prop({'checked': enabled, 'type': 'checkbox'}).prependTo(listLabel);
+      var checkbox = $('<input>').prop({
+        'checked': enabled,
+        'type': 'checkbox'
+      }).prependTo(listLabel);
 
       if (!checkbox.prop('checked')) list.addClass('disabled');
 
-      checkbox.change(function() {
+      checkbox.change(function () {
         if ($(this).prop('checked')) {
           chrome.management.setEnabled(id, true);
           $('#' + id).removeClass('disabled');
@@ -118,7 +149,7 @@ chrome.management.getAll(function(result){
         $groupApp.addClass('show');
 
         var iconOpen = $('<a>').addClass('action-icon open').appendTo(listAction);
-        iconOpen.click(function(e) {
+        iconOpen.click(function (e) {
           e.preventDefault();
           chrome.management.launchApp(id);
         });
@@ -137,6 +168,37 @@ chrome.management.getAll(function(result){
     $('#countApp').text(appCount);
 
   }
+}
+
+let allExt;
+chrome.management.getAll(result => {
+  allExt = result;
+  appendList(result);
+});
+
+$('#search').keyup(e => {
+  console.log(e);
+  let value = e.target.value.toUpperCase();
+  let promise = new Promise(resolve => {
+    let search = [];
+    allExt.forEach((item, i) => {
+      if (item.name.toUpperCase().indexOf(value) > -1) {
+        search.push(item);
+      }
+    });
+    console.log(search);
+    resolve(search);
+  });
+
+  promise.then(appendList)
+
+  // appendList(search);
+});
+
+chrome.storage.sync.get({
+  enabledSearch: true
+}, props => {
+  props.enabledSearch ? $('#searchBox').removeClass('hidden') : $('#searchBox').addClass('hidden')
 });
 
 /* i18n */
