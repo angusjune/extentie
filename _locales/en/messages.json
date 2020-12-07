@@ -1,34 +1,22 @@
 {
   "extName": {
-    "message": "Extentie"
+    "message": "Historie"
   },
 
   "extDesc": {
-    "message": "Beautiful and Simple Chrome Extension Manager"
+    "message": "A simple and elegant popup to view recently closed tabs."
   },
 
   "extDefaultTitle": {
-    "message": "Manage Extensions"
+    "message": "View closed apps"
   },
 
-  "extensions": {
-    "message": "Extensions"
+  "viewLocalHistory": {
+    "message": "View local histories"
   },
 
-  "applications": {
-    "message": "Applications"
-  },
-
-  "themes": {
-    "message": "Themes"
-  },
-
-  "gotoWebStore": {
-    "message": "Chrome Web Store"
-  },
-
-  "gotoExtension": {
-    "message": "Manage Extensions"
+  "viewAccountHistory": {
+    "message": "View account histories"
   }
 
 
