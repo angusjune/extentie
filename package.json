@@ -1,0 +1,26 @@
+{
+  "name": "qrcodie",
+  "version": "0.9.9",
+  "description": "a chrome extension to generate QR codes",
+  "private": true,
+  "scripts": {
+    "watch": "webpack --mode=development --watch --config config/webpack.config.js",
+    "build": "webpack --mode=production --config config/webpack.config.js"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^6.3.2",
+    "css-loader": "^4.3.0",
+    "file-loader": "^6.2.0",
+    "lit-element": "^2.4.0",
+    "mini-css-extract-plugin": "^0.10.1",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.1.0",
+    "size-plugin": "^2.0.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^5.4.0"
+  },
+  "dependencies": {
+    "@material/mwc-checkbox": "^0.20.0"
+  }
+}

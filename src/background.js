@@ -34,30 +34,29 @@ if (chrome.runtime && chrome.runtime.onStartup) {
 
 chrome.tabs.onUpdated.addListener(updateIcon);
 
-chrome.runtime.onInstalled.addListener(() => {
-  const webstoreUrl = 'https://chrome.google.com/webstore/category/extensions';
-  const extensionUrl = 'chrome://extensions/';
+// chrome.runtime.onInstalled.addListener(() => {
+//   const webstoreUrl = 'https://chrome.google.com/webstore/category/extensions';
+//   const extensionUrl = 'chrome://extensions/';
 
-  const mGotoWebStore = chrome.i18n.getMessage('gotoWebStore');
-  const mGotoExtension = chrome.i18n.getMessage('gotoExtension');
+//   chrome.contextMenus.create({
+//     id: "gotoExtension",
+//     title: chrome.i18n.getMessage('gotoExtension'),
+//     contexts: ["browser_action"],
+//     onclick: () => {
+//       chrome.tabs.create({
+//         url: extensionUrl
+//       });
+//     }
+//   });
 
-  chrome.contextMenus.create({
-    "title": mGotoExtension,
-    "contexts": ["browser_action"],
-    "onclick": () => {
-      chrome.tabs.create({
-        url: extensionUrl
-      });
-    }
-  });
-
-  chrome.contextMenus.create({
-    "title": mGotoWebStore,
-    "contexts": ["browser_action"],
-    "onclick": () => {
-      chrome.tabs.create({
-        url: webstoreUrl
-      });
-    }
-  });
-});
+//   chrome.contextMenus.create({
+//     id: "gotoWebStore",
+//     title: chrome.i18n.getMessage('gotoWebStore'),
+//     contexts: ["browser_action"],
+//     onclick: () => {
+//       chrome.tabs.create({
+//         url: webstoreUrl
+//       });
+//     }
+//   });
+// });
