@@ -22,6 +22,18 @@ export class ExtList extends LitElement {
             .list--inactive {
                 filter: saturate(0);
             }
+            &.development {
+    background-color: var(--list-dev-bg);
+
+    &:hover, &:focus {
+      background-color: var(--list-dev-focus-bg);
+    }
+  }
+
+  &:hover, &:focus {
+    background-color: var(--list-focus-bg);
+
+  }
         `;
     }
 
