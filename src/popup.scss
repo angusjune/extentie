@@ -1,5 +1,4 @@
 @use './khroma/textfield';
-@import 'wtf-forms.css';
 
 
 :root {
@@ -110,7 +109,6 @@ h2 {
 
   &:hover, &:focus {
     background-color: var(--list-focus-bg);
-
   }
 }
 
@@ -181,27 +179,12 @@ h2 {
   }
 }
 
-.control-indicator {
-  top: 0;
-  width: 16px;
-  height: 16px;
-  border-radius: 2px;
-}
-
-// .control input:focus~.control-indicator {
-//   box-shadow: none;
-// }
-
 .search {
   margin: 20px 10px 5px;
 
   .hide-search & {
     display: none;
   }
-}
-
-.mdc-checkbox {
-  // transform: scale(0.89);
 }
 
 // .search__textfield {

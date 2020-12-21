@@ -5,20 +5,13 @@ const updateIcon = () => {
     // set light-colored icon in dark UI
     chrome.browserAction.setIcon({
       path: {
-        '16': '/img/icon-light16.png',
-        '32': '/img/icon-light32.png',
-        '48': '/img/icon-light48.png',
-        '128': '/img/icon-colored128.png'
+        '32': 'chrome-extension://__MSG_@@extension_id__/icons/icon-light-32.png',
       }
     });
-    console.log('Dark UI activated', isDarkMode, isIncognito);
   } else {
     chrome.browserAction.setIcon({
       path: {
-        '16': '/img/icon16.png',
-        '32': '/img/icon32.png',
-        '48': '/img/icon48.png',
-        '128': '/img/icon-colored128.png'
+        '32': 'chrome-extension://__MSG_@@extension_id__/icons/icon--32.png',
       }
     });
   }

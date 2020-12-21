@@ -1,7 +1,7 @@
 {
-  "name": "qrcodie",
+  "name": "extentie",
   "version": "0.9.9",
-  "description": "a chrome extension to generate QR codes",
+  "description": "a Chrome extension to manage Chrome extensions",
   "private": true,
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",
@@ -20,7 +20,5 @@
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.4.0"
   },
-  "dependencies": {
-    "@material/mwc-checkbox": "^0.20.0"
-  }
+  "dependencies": {}
 }

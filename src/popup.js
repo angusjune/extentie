@@ -1,7 +1,6 @@
 'use strict';
 
 import './popup.scss';
-import '@material/mwc-checkbox';
 import './ext-list';
 
 const $ = (queryString = '') => { return document.querySelector(queryString); };

@@ -19,21 +19,59 @@ export class ExtList extends LitElement {
                 padding: 2px 8px;
                 transition: all ease-out 0.2s;
             }
+            .list:hover, .list:focus {
+                background-color: var(--list-focus-bg);
+            }
             .list--inactive {
                 filter: saturate(0);
             }
-            &.development {
-    background-color: var(--list-dev-bg);
+            list.development {
+                background-color: var(--list-dev-bg);
+            }
+            list.development:hover, list.development:focus {
+                background-color: var(--list-dev-focus-bg);
+            }
 
-    &:hover, &:focus {
-      background-color: var(--list-dev-focus-bg);
-    }
-  }
+            .list__actions {
+                display: flex;
+                justify-content: space-between;
+            }
+              
+            .list__actions-item {
+                display: block;
+                width: 18px;
+                height: 18px;
+                margin: 0 5px;
+                background-size: cover;
+                background-repeat: no-repeat;
+                cursor: pointer;
+                transition: opacity ease-out 0.15s;
+            }
 
-  &:hover, &:focus {
-    background-color: var(--list-focus-bg);
+            .list__actions-item--placehold {
+                cursor: default;
+            }
 
-  }
+            .list__actions-item--option {
+                opacity: 0.8;
+            }
+
+            .list__actions-item--option:hover, .list__actions-item--option:focus {
+                opacity: 1;
+            }
+
+            .list__actions-item--delete {
+                visibility: hidden;
+            }
+
+            .list__actions-item--delete:hover, .list__actions-item--delete:focus {
+                opacity: 1 !important;
+            }
+
+            .list-item:focus .list__actions-item--delete, .list-item:hover .list__actions-item--delete {
+                visibility: visible;
+                opacity: 0.8;
+            }
         `;
     }
 
