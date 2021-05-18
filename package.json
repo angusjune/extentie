@@ -1,13 +1,14 @@
 {
   "name": "extentie",
   "version": "0.9.9",
-  "description": "a Chrome extension to manage Chrome extensions",
+  "description": "Manage Chrome extensions",
   "private": true,
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",
     "build": "webpack --mode=production --config config/webpack.config.js"
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.127",
     "copy-webpack-plugin": "^6.3.2",
     "css-loader": "^4.3.0",
     "file-loader": "^6.2.0",
@@ -16,6 +17,9 @@
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
     "size-plugin": "^2.0.1",
+    "svelte": "^3.38.2",
+    "svelte-loader": "^3.1.1",
+    "svelte-preprocess": "^4.7.3",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.4.0"

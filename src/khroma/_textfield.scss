@@ -1,20 +1,54 @@
-$textfield-bg: #F1F3F4;
+@use 'sass:map';
+
+$theme-colors: (
+    'background'   : #f1f3f4,
+    'text'         : rgba(0, 0, 0, 0.35),
+    'text-focus'   : rgba(0, 0, 0, 0.8),
+    'outline-focus': #a9c3f7,
+    'icon'         : #686a6e,
+);
+
+$theme-colors-dark: (
+    'background'   : #202124,
+    'text'         : rgba(255, 255, 255, 0.45),
+    'text-focus'   : rgba(255, 255, 255, 0.8),
+    'outline-focus': #396286,
+    'icon'         : #7c7e83,
+);
+
+@mixin theme-kd-textfield($dark-theme: false) {
+    $var: $theme-colors !default;
+    @if $dark-theme {
+        $var: $theme-colors-dark;
+    }
+
+    @each $style in map.keys($var) {
+        --kd-textfield-#{$style}: #{map.get($var, $style)};
+    }
+
+    --kd-textfield-background-hover: #{lighten(map.get($var, 'background'), 1%)};
+    --kd-textfield-background-focus: #{darken(map.get($var, 'background'), 4%)};
+}
 
 .kd-textfield {
-    --textfield-bg: #F1F3F4;
-    --textfield-text: rgba(0,0,0,0.35);
-    --textfield-text-focus: rgba(0,0,0,0.8);
-    --textfield-outline-focus:  #a9c3f7;
-    --textfield-icon: #686a6e;
+    @include theme-kd-textfield($dark-theme: false);
 
     position: relative;
     width: 100%;
     height: 28px;
 
+    .kd-body--dark-theme & {
+        @include theme-kd-textfield($dark-theme: true);
+    }
+    
+    .kd-body--light-theme & {
+        @include theme-kd-textfield($dark-theme: false);
+    }
+
     &__input {
         font-size: 14px;
-        color: var(--textfield-text);
-        background: var(--textfield-bg);
+        color: var(--kd-textfield-text);
+        background-color: var(--kd-textfield-background);
         width: 100%;
         height: 100%;
         border-radius: 22px;
@@ -24,15 +58,15 @@ $textfield-bg: #F1F3F4;
         transition: background linear 0.12s;
 
         &:hover {
-            background: darken($textfield-bg, 3%);
+            background: var(--kd-textfield-background-hover);
         }
 
         &:focus {
-            background: lighten($textfield-bg, 5%);
-            color: var(--textfield-text-focus);
+            background: var(--kd-textfield-background-focus);
+            color: var(--kd-textfield-text-focus);
             text-overflow: clip;
             outline: none;
-            box-shadow: 0 0 0 2px var(--textfield-outline-focus);
+            box-shadow: 0 0 0 2px var(--kd-textfield-outline-focus);
         }
     }
 
@@ -49,18 +83,15 @@ $textfield-bg: #F1F3F4;
         &--search {
             background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath d='M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z' fill='#686a6e'/%3E %3C/svg%3E ");
         }
-    
+
         svg path {
-            fill: var(--textfield-icon);
+            fill: var(--kd-textfield-icon);
         }
     }
 }
 
 @media (prefers-color-scheme: dark) {
     .kd-textfield {
-        --textfield-bg: #202124;
-        --textfield-text: rgba(255,255,255,0.45);
-        --textfield-text-focus: rgba(255,255,255,0.8);
-        --textfield-outline-focus: #396286;
+        @include theme-kd-textfield($dark-theme: true);
     }
 }

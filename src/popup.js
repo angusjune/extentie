@@ -1,7 +1,7 @@
 'use strict';
 
 import './popup.scss';
-import './ext-list';
+import './extList';
 
 const $ = (queryString = '') => { return document.querySelector(queryString); };
 
@@ -11,6 +11,24 @@ const $groupTheme = $('#groupTheme');
 const $listExt    = $groupExt.querySelector('.list');
 const $listApp    = $groupApp.querySelector('.list');
 const $listTheme  = $groupTheme.querySelector('.list');
+
+const isBrowserDark = window.matchMedia('(prefers-color-scheme: dark)').matches || chrome.extension.inIncognitoContext;
+chrome.runtime.sendMessage({ isBrowserDark: isBrowserDark });
+if (isBrowserDark) {
+      chrome.action.setIcon({ 
+        path: {
+          16: `icons/action-icon-light-16.png`,
+          24: `icons/action-icon-light-24.png`,
+          32: `icons/action-icon-light-32.png`,
+        }
+      });
+    } else {
+      chrome.action.setIcon({ path: {
+        16: `icons/action-icon-16.png`,
+        24: `icons/action-icon-24.png`,
+        32: `icons/action-icon-32.png`,
+      }});
+}
 
 const getIcon = iconArray => {
   let url;
@@ -72,21 +90,21 @@ const appendList = result => {
       const mayDisabled = t.mayDisable;
 
       const list = document.createElement('ext-list');
-      list.textContent = name || shortName;
+      list.textContent = shortName || name;
 
       list.setAttribute('id', id);
-      list.setAttribute('icon', icon);
-      list.setAttribute('title', description);
+      list.setAttribute('iconurl', icon);
+      list.setAttribute('installtype', installType);
+      list.setAttribute('mayenabled', mayEnabled);
+      list.setAttribute('maydisabled', mayDisabled);
+      list.setAttribute('role', 'listitem');
 
       if (enabled) list.setAttribute('enabled', '');
       if (isApp) list.setAttribute('isapp', '');
       if (optionsUrl) list.setAttribute('optionsurl', optionsUrl);
 
-      list.classList.add(installType);
-
-
       list.addEventListener('checkbox:change', e => {
-        const enabled = e.target.checked;
+        const enabled = e.detail.target.checked;
         chrome.management.setEnabled(id, enabled);
 
         if (enabled) {
@@ -152,8 +170,8 @@ const appendList = result => {
     $('#countEnabledExt').textContent = extEnabledCount;
     $('#countEnabledApp').textContent = appEnabledCount;
 
-    $('#countExt').textContent = extCount;
-    $('#countApp').textContent = appCount;
+    $('#countExt').textContent   = extCount;
+    $('#countApp').textContent   = appCount;
     $('#countTheme').textContent = themeCount;
   }
 };

@@ -1,0 +1,130 @@
+@use 'sass:color';
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use 'sass:string';
+@use './constants';
+
+// Calculate the luminance for a color.
+// See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+@function luminance($color) {
+    $red: list.nth(constants.$linear-channel-values, color.red($color) + 1);
+    $green: list.nth(constants.$linear-channel-values, color.green($color) + 1);
+    $blue: list.nth(constants.$linear-channel-values, color.blue($color) + 1);
+
+    @return 0.2126 * $red+0.7152 * $green+0.0722 * $blue;
+}
+
+// Calculate the contrast ratio between two colors.
+// See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+@function contrast($back, $front) {
+    $backLum: luminance($back) + 0.05;
+    $foreLum: luminance($front) + 0.05;
+
+    @return math.max($backLum, $foreLum) / math.min($backLum, $foreLum);
+}
+
+// Determine whether the color is 'light' or 'dark'.
+@function tone($color) {
+    @if $color == 'dark' or $color == 'light' {
+      @return $color;
+    }
+  
+    $minimumContrast: 3.1;
+  
+    $lightContrast: contrast($color, white);
+    $darkContrast: contrast($color, rgba(black, 0.87));
+  
+    @if ($lightContrast < $minimumContrast) and ($darkContrast > $lightContrast) {
+      @return 'light';
+    } @else {
+      @return 'dark';
+    }
+  }
+  
+  // Determine whether to use dark or light text on top of given color to meet accessibility standards for contrast.
+  // Returns 'dark' if the given color is light and 'light' if the given color is dark.
+  @function contrast-tone($color) {
+    @return if(tone($color) == 'dark', 'light', 'dark');
+  }
+
+
+$primary: #1A73E8 !default;
+$on-primary: if(contrast-tone($primary) == 'dark', #000, #fff) !default;
+$background: #fff !default;
+$surface: #fff !default;
+$on-surface: if(contrast-tone($surface) == 'dark', #000, #fff) !default;
+$error: #b00020 !default;
+$on-error: if(contrast-tone($error) == 'dark', #000, #fff) !default;
+
+$text-colors: (
+    dark: (
+        primary: rgba(black, 0.87),
+        secondary: rgba(black, 0.54),
+        hint: rgba(black, 0.38),
+        disabled: rgba(black, 0.38),
+        icon: rgba(black, 0.38),
+    ),
+    light: (
+        primary: white,
+        secondary: rgba(white, 0.7),
+        hint: rgba(white, 0.5),
+        disabled: rgba(white, 0.5),
+        icon: rgba(white, 0.5),
+    ),
+) !default;
+
+@function ink-color-for-fill_($text-style, $fill-color) {
+    $contrast-tone: contrast-tone($fill-color);
+  
+    @return map.get(map.get($text-colors, $contrast-tone), $text-style);
+}
+
+$property-values: (
+  primary: $primary,
+  secondary: $secondary,
+  background: $background,
+  surface: $surface,
+  error: $error,
+  on-primary: $on-primary,
+  on-secondary: $on-secondary,
+  on-surface: $on-surface,
+  on-error: $on-error,
+  text-primary-on-background: ink-color-for-fill_(primary, $background),
+  text-secondary-on-background: ink-color-for-fill_(secondary, $background),
+  text-hint-on-background: ink-color-for-fill_(hint, $background),
+  text-disabled-on-background: ink-color-for-fill_(disabled, $background),
+  text-icon-on-background: ink-color-for-fill_(icon, $background),
+  text-primary-on-light: ink-color-for-fill_(primary, light),
+  text-secondary-on-light: ink-color-for-fill_(secondary, light),
+  text-hint-on-light: ink-color-for-fill_(hint, light),
+  text-disabled-on-light: ink-color-for-fill_(disabled, light),
+  text-icon-on-light: ink-color-for-fill_(icon, light),
+  text-primary-on-dark: ink-color-for-fill_(primary, dark),
+  text-secondary-on-dark: ink-color-for-fill_(secondary, dark),
+  text-hint-on-dark: ink-color-for-fill_(hint, dark),
+  text-disabled-on-dark: ink-color-for-fill_(disabled, dark),
+  text-icon-on-dark: ink-color-for-fill_(icon, dark),
+) !default;
+
+
+@mixin prop($property, $style, $important: false) {
+  @if custom-properties.is-custom-prop($style) {
+    @include custom-properties.apply($property, $style, $important: $important);
+  } @else if theme-color.is-valid-theme-prop-value_($style) {
+    @include css.declaration($property, $style, $important: $important);
+  } @else {
+    @if not map.has-key(theme-color.$property-values, $style) {
+      @error "Invalid style: '#{$style}'. Choose one of: #{map.keys(theme-color.$property-values)}";
+    }
+    $value: map.get(theme-color.$property-values, $style);
+
+    @include css.declaration(
+      $property,
+      $value: var(--mdc-theme-#{$style}, $value),
+      $fallback-value: $value,
+      $important: $important
+    );
+  }
+}
