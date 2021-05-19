@@ -8,10 +8,6 @@
   --list-dev-focus-bg: #FFE865;
   --list-actions-item-fill: #606367;
 
-  // --textfield-bg: #F1F3F4;
-  // --textfield-text: rgba(0, 0, 0, 0.35);
-  // --textfield-text-focus: rgba(0, 0, 0, 0.8);
-  // --textfield-outline-focus: #a9c3f7;
   --checkbox-stroke: rgba(0, 0, 0, 0.2);
   --checkbox-checked-container: #1A73E8;
   --checkbox-focus-stroke: rgba(0,0,0,0.36);
@@ -33,9 +29,12 @@ body {
   color: var(--text-primary);
   font-family: -apple-system, sans-serif;
   width: 320px;
-  max-height: 500px;
+  max-height: 650px;
   -webkit-user-drag: none;
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 h1,
@@ -54,6 +53,11 @@ h2 {
   &.show {
     display: block;
   }
+}
+
+.group-wrapper {
+  flex: 1;
+  overflow: auto;
 }
 
 .header {
@@ -82,7 +86,10 @@ h2 {
 }
 
 .search {
-  margin: 20px 16px 12px;
+  padding: 16px;
+  background: var(--bg);
+  z-index: 1;
+  width: 100%;
 
   .hide-search & {
     display: none;
@@ -95,10 +102,5 @@ h2 {
     --list-dev-bg: #504636;
     --list-dev-focus-bg: #645641;
     --checkbox-stroke: rgba(255, 255, 255, 0.3);
-
-    // --textfield-bg: #202124;
-    // --textfield-text: rgba(255, 255, 255, 0.45);
-    // --textfield-text-focus: rgba(255, 255, 255, 0.8);
-    // --textfield-outline-focus: #396286;
   }
 }
