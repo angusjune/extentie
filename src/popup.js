@@ -17,16 +17,16 @@ chrome.runtime.sendMessage({ isBrowserDark: isBrowserDark });
 if (isBrowserDark) {
       chrome.action.setIcon({ 
         path: {
-          16: `icons/action-icon-light-16.png`,
-          24: `icons/action-icon-light-24.png`,
-          32: `icons/action-icon-light-32.png`,
+          16: `icons/icon-light-16.png`,
+          32: `icons/icon-light-32.png`,
+          48: `icons/icon-light-48.png`,
         }
       });
     } else {
       chrome.action.setIcon({ path: {
-        16: `icons/action-icon-16.png`,
-        24: `icons/action-icon-24.png`,
-        32: `icons/action-icon-32.png`,
+        16: `icons/icon-16.png`,
+        32: `icons/icon-32.png`,
+        48: `icons/icon-48.png`,
       }});
 }
 

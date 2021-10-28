@@ -32,9 +32,8 @@ body {
   max-height: 650px;
   -webkit-user-drag: none;
   -webkit-font-smoothing: antialiased;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 h1,
@@ -56,8 +55,8 @@ h2 {
 }
 
 .group-wrapper {
-  flex: 1;
-  overflow: auto;
+  position: absolute;
+
 }
 
 .header {
@@ -90,6 +89,7 @@ h2 {
   background: var(--bg);
   z-index: 1;
   width: 100%;
+  position: fixed;
 
   .hide-search & {
     display: none;
