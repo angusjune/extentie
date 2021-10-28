@@ -29,6 +29,14 @@
 
   "gotoExtension": {
     "message": "管理扩展"
+  },
+
+  "delete_this": {
+    "message": "卸载"
+  },
+
+  "open_option": {
+    "message": "设置"
   }
 
 

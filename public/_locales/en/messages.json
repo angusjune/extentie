@@ -36,10 +36,10 @@
   },
 
   "delete_this": {
-    "message": "Uninstall this extension"
+    "message": "Uninstall"
   },
 
   "open_option": {
-    "message": "Go to option page"
+    "message": "Settings"
   }
 }
