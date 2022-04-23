@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Extentie: a beautiful and simple Chrome extension manager"
+    "message": "Extentie - extension manager"
   },
 
   "ext_short_ame": {
@@ -8,7 +8,7 @@
   },
 
   "extDesc": {
-    "message": "Beautiful and Simple Chrome Extension Manager"
+    "message": "A simple and elegant Chrome extension manager allows you manage your extensions in a popup window."
   },
 
   "extDefaultTitle": {
@@ -36,10 +36,10 @@
   },
 
   "delete_this": {
-    "message": "Uninstall this extension"
+    "message": "Uninstall"
   },
 
   "open_option": {
-    "message": "Go to option page"
+    "message": "Settings"
   }
 }

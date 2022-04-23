@@ -5,13 +5,21 @@
         <link rel="stylesheet" href="./options.css"/>
     </head>
 
-    <body>
+    <body class="kd-body">
         <form class="controls-stacked">
-            <label class="control checkbox option">
+            <label class="list__checkbox" for="searchCheck">
+                <input id="searchCheck" class="checkbox-native" type="checkbox" checked />
+                <div class="checkbox-indicator" role="presentation">
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 3L4 6L9 1" stroke="#fff" stroke-width="2"/></svg>
+                </div>
+                Enabled search
+            </label>
+
+            <!-- <label class="control checkbox option">
                 <input type="checkbox" id="searchCheck" checked>
                 <span class="control-indicator"></span>
                 Enabled search
-            </label>
+            </label> -->
         </form>
     </body>
 

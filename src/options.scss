@@ -1,8 +1,25 @@
 @use './khroma/body';
-@import './wtf-forms.css';
+@use './khroma/checkbox';
+
+:root {
+    --checkbox-stroke: rgba(0, 0, 0, 0.2);
+    --checkbox-checked-container: #1A73E8;
+    --checkbox-focus-stroke: rgba(0,0,0,0.36);
+}
 
 body {
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .option {}
+
+.controls-stacked {
+    padding: 16px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    :root {
+      --checkbox-stroke: rgba(255, 255, 255, 0.3);
+    }
+  }
