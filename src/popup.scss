@@ -29,7 +29,6 @@ body {
   color: var(--text-primary);
   font-family: -apple-system, sans-serif;
   width: 320px;
-  max-height: 650px;
   -webkit-user-drag: none;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
@@ -47,7 +46,6 @@ h2 {
 
 .group {
   display: none;
-  margin-bottom: 1.2rem;
 
   &.show {
     display: block;
@@ -55,8 +53,7 @@ h2 {
 }
 
 .group-wrapper {
-  position: absolute;
-
+  padding: 60px 0 16px;
 }
 
 .header {
@@ -85,6 +82,8 @@ h2 {
 }
 
 .search {
+  box-sizing: border-box;
+  height: 60px;
   padding: 16px;
   background: var(--bg);
   z-index: 1;
