@@ -22,7 +22,6 @@ export class ExtList extends LitElement {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                /* padding: 12px 8px 12px 16px; */
                 transition: all ease-out 0.2s;
             }
             :host(:hover) .list, :host(:focus) .list {
