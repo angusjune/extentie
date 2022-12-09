@@ -1,18 +1,10 @@
 {
-  "extName": {
+  "ext_name": {
     "message": "Extentie - extension manager"
   },
 
-  "ext_short_ame": {
-    "message": "Extentie"
-  },
-
-  "extDesc": {
+  "ext_desc": {
     "message": "A simple and elegant Chrome extension manager allows you manage your extensions in a popup window."
-  },
-
-  "extDefaultTitle": {
-    "message": "Manage Extensions"
   },
 
   "extensions": {
@@ -27,12 +19,16 @@
     "message": "Themes"
   },
 
-  "gotoWebStore": {
+  "go_to_webstore": {
     "message": "Chrome Web Store"
   },
 
-  "gotoExtension": {
+  "manage_extensions": {
     "message": "Manage Extensions"
+  },
+
+  "set_groups": {
+    "message": "Set Groups"
   },
 
   "delete_this": {
@@ -41,5 +37,51 @@
 
   "open_option": {
     "message": "Settings"
+  },
+  "layout": {
+    "message": "Layout"
+  },
+  "set_up_user_groups": {
+    "message": "Set up my groups"
+  },
+  "show_user_groups_only": {
+    "message": "Show my groups only"
+  },
+  "show_search": {
+    "message": "Show search bar"
+  },
+  "display_full_name": {
+    "message": "Display extension full name"
+  },
+  "enabled_ext_on_top": {
+    "message": "Place enabled extensions on top"
+  },
+  "show_ext_desc_on_hover": {
+    "message": "Show extension description on hover"
+  },
+  "default": {
+    "message": "Default"
+  },
+  "compact": {
+    "message": "Compact"
+  },
+  "comfortable": {
+    "message": "Comfortable"
+  },
+  "no_results": {
+    "description": "empty list or empty search results",
+    "message": "No results"
+  },
+  "all": {
+    "description": "tab name",
+    "message": "All"
+  },
+  "groups": {
+    "description": "tab name",
+    "message": "Groups"
+  },
+  "others": {
+    "description": "group name",
+    "message": "Others"
   }
 }

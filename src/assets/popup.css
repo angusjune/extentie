@@ -1,0 +1,9 @@
+@import url(./base.css);
+
+body {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    background: var(--surface);
+}

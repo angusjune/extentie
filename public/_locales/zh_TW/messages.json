@@ -1,77 +1,77 @@
 {
   "ext_name": {
-    "message": "Extentie - 扩展程序管理器"
+    "message": "Extentie - 擴充功能管理器"
   },
 
   "ext_desc": {
-    "message": "漂亮而简单的扩展程序管理工具"
+    "message": "漂亮而簡單的擴充功能管理工具"
   },
 
   "extensions": {
-    "message": "扩展"
+    "message": "擴充功能"
   },
 
   "applications": {
-    "message": "应用"
+    "message": "應用程式"
   },
 
   "themes": {
-    "message": "主题"
+    "message": "主題"
   },
 
   "go_to_webstore": {
-    "message": "前往 Chrome 网上应用店"
+    "message": "前往 Chrome 線上應用程式商店"
   },
 
   "manage_extensions": {
-    "message": "管理扩展"
+    "message": "管理擴充功能"
   },
 
   "set_groups": {
-    "message": "设置分组"
+    "message": "設定分組"
   },
 
   "delete_this": {
-    "message": "卸载"
+    "message": "移除"
   },
 
   "open_option": {
-    "message": "设置"
+    "message": "設定"
   },
 
   "layout": {
     "message": "布局"
   },
   "set_up_user_groups": {
-    "message": "设置我的分组"
+    "message": "設定我的分組"
   },
   "show_user_groups_only": {
-    "message": "仅显示我设置的分组"
+    "message": "僅顯示我設置的分組"
   },
   "show_search": {
-    "message": "显示搜索框"
+    "message": "顯示搜尋框"
   },
   "display_full_name": {
-    "message": "显示扩展的完整名称"
+    "message": "顯示擴充功能的完整名稱"
   },
   "enabled_ext_on_top": {
-    "message": "优先展示已启用的扩展"
+    "message": "優先展示已啟用的擴充功能"
   },
   "show_ext_desc_on_hover": {
-    "message": "鼠标悬停时显示扩展的描述"
+    "message": "滑鼠懸停時顯示擴充功能的描述"
   },
   "default": {
-    "message": "默认"
+    "message": "預設"
   },
   "compact": {
-    "message": "紧凑"
+    "message": "緊湊"
   },
   "comfortable": {
-    "message": "宽松"
+    "message": "寬鬆"
   },
   "no_results": {
     "description": "empty list or empty search results",
-    "message": "无结果"
+    "message": "無結果"
   },
 
   "all": {
@@ -81,7 +81,7 @@
 
   "groups": {
     "description": "tab name",
-    "message": "分组"
+    "message": "分組"
   },
 
   "others": {
