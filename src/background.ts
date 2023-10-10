@@ -1,6 +1,9 @@
 import { optionsStorage, userGroupsStorage } from './options-storage';
+import { getIconDictionary, iconColors } from './action-icon';
+import { msg } from '@/utils/i18n';
 
-const i18n = chrome.i18n.getMessage;
+const optionsStored = {} as ExtentieOptions;
+const localStored   = {} as { colorScheme: ColorScheme };
 
 async function getAll() {
     const extensions: chrome.management.ExtensionInfo[] = await chrome.management.getAll();
@@ -19,6 +22,32 @@ async function getOptions() {
     const options = await optionsStorage.getAll();
     return options;
 }
+
+function setIcon(name: ExtentieOptions['iconStyle'], iconColor: ExtentieOptions['iconColor'], colorScheme: ColorScheme) {
+    let color: iconColors;
+
+    if (iconColor === 'auto') {
+        color = colorScheme === 'dark' ? iconColors.LIGHT : iconColors.DARK;
+    } else {
+        const key = iconColor.toUpperCase().replace(/-/g, '_');
+        color = iconColors[key as keyof typeof iconColors];
+    }
+
+    const imageData = getIconDictionary(name, color);
+    chrome.action.setIcon({ imageData })
+}
+
+// get all options
+(async () => {
+    const options = await optionsStorage.getAll();
+
+    chrome.storage.local.get('colorScheme', ({ colorScheme }) => {
+        Object.assign(localStored, { colorScheme });
+        // set icon
+        setIcon(options.iconStyle, options.iconColor, colorScheme);
+    });
+
+})();
 
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
     switch (type) {
@@ -49,20 +78,33 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
     }
 });
 
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    
+    if (changes.options) {
+        /** @ts-ignore */
+        const newValues: ExtentieOptions = optionsStorage._decode(changes.options.newValue);
+        Object.assign(optionsStored, newValues);
+    } else if (changes.colorScheme) {
+        localStored.colorScheme = changes.colorScheme.newValue;
+    }
+
+    setIcon(optionsStored.iconStyle, optionsStored.iconColor, localStored.colorScheme);
+});
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         contexts: ['action'],
-        title: i18n('set_groups'),
+        title: msg('set_groups'),
         id: 'customize'
     });
     chrome.contextMenus.create({
         contexts: ['action'],
-        title: i18n('manage_extensions'),
+        title: msg('manage_extensions'),
         id: 'manage'
     });
     chrome.contextMenus.create({
         contexts: ['action'],
-        title: i18n('go_to_webstore'),
+        title: msg('go_to_webstore'),
         id: 'webstore'
     });
 });

@@ -9,18 +9,17 @@ import ExtIconButton from "@/components/ExtIconButton.vue"
 import Add from '~icons/material-symbols/add-rounded'
 import Delete from '~icons/material-symbols/delete-rounded'
 import DragHandle from '~icons/material-symbols/drag-indicator'
+import { msg } from '@/utils/i18n'
 
 const extensions: chrome.management.ExtensionInfo[] = reactive([])
 const userGroupSetup: UserGroupInfo[] = reactive([])
 const tempUserGroupSetup: UserGroupInfo[] = reactive([])
 const searchTerm = ref<string>('')
 
-chrome.runtime.sendMessage({ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: Options, userGroups: OptionsUserGroups}) => {
+chrome.runtime.sendMessage({ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
     Object.assign(extensions, res.extensions)
     Object.assign(userGroupSetup, res.userGroups.userGroups)
     Object.assign(tempUserGroupSetup, res.userGroups.userGroups)
-
-    // console.log('get from storage', userGroupSetup)
 })
 
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
@@ -36,7 +35,7 @@ function getExtInfoFromId(id: chrome.management.ExtensionInfo['id']) {
 function createGroup() {
     const newGroup: UserGroupInfo = {
         id: uuid(),
-        name: 'New Group',
+        name: msg('New Group'),
         order: [],
     }
 
@@ -178,7 +177,7 @@ watch(userGroupSetup, val => {
                 <div class="card" :data-id="group.id">
                     <header class="card__header">
                         <DragHandle class="handle" />
-                        <input class="card__title card__title--input" type="text" aria-label="group name" v-model="group.name" @change="e=>setGroupName(e, group.id)" maxlength="40" />
+                        <input class="card__title card__title--input" type="text" aria-label="group name" v-model="group.name" @change="setGroupName($event, group.id)" maxlength="40" />
                         <div class="card__actions">
                             <ExtIconButton @click="removeGroup(group.id)"><Delete /></ExtIconButton>
                         </div>
@@ -200,7 +199,7 @@ watch(userGroupSetup, val => {
                                 v-if="getExtInfoFromId(id)"
                                 v-bind="getExtInfoFromId(id)"
                                 :data-id="id"
-                                :title="getExtInfoFromId(id)?.name"
+                                :title="getExtInfoFromId(id)?.name ?? ''"
                                 :showActions="false"
                             />
                         </template>
@@ -212,8 +211,8 @@ watch(userGroupSetup, val => {
             </Sortable>
 
             <div class="add-card" @click="createGroup" role="button">
-                <Add />
-                <span>New group</span>
+                <Add aria-hidden="true" />
+                <span>{{msg('new_group')}}</span>
             </div>
 
         </section>

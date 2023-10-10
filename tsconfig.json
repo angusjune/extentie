@@ -12,11 +12,15 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
     "noEmit": true,
-    // "allowJs": true,
+    "paths": {
+      "@/*": ["./src/*"],
+    },
     "types": [
       "unplugin-icons/types/vue",
       "chrome",
-      "uuid"
+      "uuid",
+      "offscreencanvas",
+      "node"
     ]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],

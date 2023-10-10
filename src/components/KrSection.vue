@@ -1,10 +1,8 @@
-<script>
-export default {
-    props: {
-        title: String,
-        subtitle: String,
-    },
-}
+<script lang="ts" setup>
+const props = defineProps<{
+    title?: string,
+    subtitle?: string,
+}>()
 </script>
 
 <template>

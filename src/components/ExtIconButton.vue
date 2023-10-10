@@ -1,19 +1,17 @@
-<script>
-export default({
-    props: {
-        ariaLabel: String,
-        disabled: Boolean,
-    }
-})
+<script lang="ts" setup>
+const props = defineProps<{
+    ariaLabel?: string,
+    disabled?: boolean,
+}>()
 </script>
 
 <template>
-    <button class="icon-button">
+    <button class="icon-button" :aria-label="ariaLabel" :disabled="disabled">
         <slot />
     </button>
 </template>
 
-<style scoped>
+<style lang="postcss" scoped>
 .icon-button {
     --button-size: 18px;
 

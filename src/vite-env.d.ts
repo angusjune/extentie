@@ -6,17 +6,18 @@ declare module '*.vue' {
   export default component
 }
 
-declare interface Options {
+declare interface ExtentieOptions {
   enabledSearch: boolean;
   displayFullName: boolean;
   enabledExtensionsOnTop: boolean;
   showExtensionDescriptionOnHover: boolean;
+  highlightSideLoadExtensions: boolean;
   layout: 'default' | 'compact' | 'comfortable',
-  collapsed: string[],
+  collapsed: string,
   showUserGroupsOnly: boolean,
   selectedTab: number,
   useNativeScrollbar: boolean,
-  iconStyle: 'classic' | 'geometric',
+  iconStyle: 'classic' | 'geometric' | 'modern',
   iconColor: 'auto' | 'light' | 'dark' | 'blue' | 'yellow',
 }
 
@@ -30,9 +31,7 @@ declare interface OptionsUserGroups {
 	userGroups: UserGroupInfo[];
 }
 
-declare interface OptionsThemes {
-  icon: 'light' | 'dark'
-}
+declare type ColorScheme = 'light' | 'dark';
 
 declare interface Message {
   type: MessageType;

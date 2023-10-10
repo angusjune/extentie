@@ -6,8 +6,7 @@ import ExtList from '@/components/ExtList.vue'
 import ExtGroup from '@/components/ExtGroup.vue'
 import ExtTabBar from '@/components/ExtTabBar.vue'
 import ExtEmpty from '@/components/ExtEmpty.vue'
-
-const i18n = chrome.i18n.getMessage
+import { msg } from '@/utils/i18n'
 
 interface groupTitleMap {
     [key: chrome.management.ExtensionInfo['type']]: string
@@ -23,7 +22,7 @@ const groupTitles: groupTitleMap = {
 }
 
 const extensions: chrome.management.ExtensionInfo[] = reactive([])
-const options = reactive(<Options>{})
+const options = reactive(<ExtentieOptions>{})
 const userGroupSetup: UserGroupInfo[] = reactive([])
 
 const defaultExtensionGroups = reactive(<DefaultExtensionGroups>{})
@@ -33,11 +32,11 @@ const currentTab = ref(0)
 const collapsed: chrome.management.ExtensionInfo['id'][] = reactive([])
 const searchTerm = ref<string>('')
 
-const tabItems = [i18n('all'), i18n('groups')]
+const tabItems = [msg('all'), msg('groups')]
 
 const hasInit = ref(false)
 
-chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: Options, userGroups: OptionsUserGroups}) => {
+chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
     console.log(res)
     Object.assign(extensions, res.extensions)
     Object.assign(userGroupSetup, res.userGroups.userGroups)
@@ -46,7 +45,7 @@ chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: chro
     Object.assign(defaultExtensionGroups, getDefaultGroups())
     Object.assign(userExtensionGroups, getUserGroups())
 
-    collapsed.push(...res.options.collapsed)
+    collapsed.push(...JSON.parse(res.options.collapsed))
     currentTab.value = res.options.selectedTab
     hasInit.value = true
 })
@@ -123,7 +122,7 @@ function groupToggleCollapsed(id: string) {
     } else {
         collapsed.push(id)
     }
-    chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: { collapsed: toRaw(collapsed) } })
+    chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: { collapsed: JSON.stringify(toRaw(collapsed)) } })
 }
 
 function getSearchResults(searchTerm: string, searchIn: DefaultExtensionGroups): DefaultExtensionGroups {
@@ -174,7 +173,7 @@ const notGroupedByUser = computed<ExtensionGroup>(() => {
         return a.name.localeCompare(b.name)
     })
 
-    return new ExtensionGroup('others', i18n('others'), array)
+    return new ExtensionGroup('others', msg('others'), array)
 })
 
 const shownGroups = computed<DefaultExtensionGroups>(() => {
@@ -233,10 +232,15 @@ watch(shownGroups, val => {
 
                 <template #item="{item}: {item: chrome.management.ExtensionInfo}">
                     <ExtList
-                        v-bind="item"
                         v-model:enabled="item.enabled"
+                        :id="item.id"
+                        :icons="item.icons"
+                        :mayDisable="item.mayDisable"
+                        :mayEnable="item.mayEnable"
+                        :optionsUrl="item.optionsUrl"
                         :title="options.displayFullName ? item.name : (item.shortName || item.name)"
-                        :description="options.showExtensionDescriptionOnHover ? item.description : null"
+                        :description="options.showExtensionDescriptionOnHover ? item.description : undefined"
+                        :highlight="item.installType !== 'normal'"
                         :isApp="item.type.includes('app')"
                         :style="{...listLayoutProps}"
                         @update:enabled="setEnabled(item.id, $event)"
@@ -248,7 +252,7 @@ watch(shownGroups, val => {
         </TransitionGroup>
 
         <div class="lists-container__empty" v-else-if="hasInit">
-            <ExtEmpty :title="i18n('no_results')" />
+            <ExtEmpty :title="msg('no_results')" />
         </div>
     </main>
 

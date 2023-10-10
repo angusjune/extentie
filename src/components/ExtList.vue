@@ -1,4 +1,5 @@
-<script>
+<script lang="ts" setup>
+import { computed, watch } from 'vue'
 import ExtCheckbox from '@/components/ExtCheckbox.vue'
 import ExtIconButton from '@/components/ExtIconButton.vue'
 import Delete from '~icons/material-symbols/delete-rounded'
@@ -6,69 +7,56 @@ import Settings from '~icons/material-symbols/settings-rounded'
 import OpenInNew from '~icons/material-symbols/open-in-new-rounded'
 import Extension from '~icons/material-symbols/extension'
 
-export default({
-    components: {
-        ExtCheckbox,
-        ExtIconButton,
-        Delete,
-        Settings,
-        OpenInNew,
-        Extension,
-    },
-    props: {
-        id: String,
-        title: String,
-        description: String,
-        enabled: Boolean,
-        mayEnabled: Boolean,
-        mayDisabled: Boolean,
-        optionsUrl: String,
-        isApp: Boolean,
-        installType: String,
-        icons: Array,
-        showActions: {
-            type: Boolean,
-            default: true,
-        },
-    },
-    emits: ['update:enabled'],
-    methods: {
-        onDelete() {
-            /** @FIXME remove from list after deletion */
-            // chrome.management.uninstall(this.id, { showConfirmDialog: true })
-            chrome.runtime.sendMessage({ type: 'UNINSTALL', data: { id: this.id } })
-        },
-        onOpenOptions() {
-            chrome.tabs.create({ url: this.optionsUrl })
-        },
-        onLaunchApp() {
-            chrome.management.launchApp(this.id)
-        },
-    },
-    computed: {
-        isNormalInstalled() {
-            return this.installType === 'normal'
-        },
-        icon() {
-            if (this.icons) {
-                return this.icons[this.icons.length - 1].url
-            }
-            return ''
-        }
-    },
-    watch: {
-        enabled(val) {
-            this.$emit('update:enabled', val)
-        }
+const props = withDefaults(defineProps<{
+    id: string,
+    title: string,
+    description?: string,
+    enabled: boolean,
+    mayEnable?: boolean,
+    mayDisable: boolean,
+    optionsUrl: string,
+    isApp: boolean,
+    icons?: chrome.management.IconInfo[],
+    highlight?: boolean,
+    showActions?: boolean,
+}>(), {
+    showActions: true,
+    highlight: false,
+    mayEnable: true,
+})
+
+const emit = defineEmits<{
+  (e: 'update:enabled', value: typeof props.enabled): void
+}>()
+
+function onDelete() {
+    chrome.runtime.sendMessage({ type: 'UNINSTALL', data: { id: props.id } })
+}
+function onOpenOptions() {
+    chrome.tabs.create({ url: props.optionsUrl })
+}
+function onLaunchApp() {
+    chrome.management.launchApp(props.id)
+}
+
+const icon = computed(() => {
+    if (props.icons) {
+        return props.icons[props.icons.length - 1].url
     }
+    return ''
+})
+
+const _enabled = computed({
+    get() { return props.enabled },
+    set(value) { emit('update:enabled', value) },
 })
 </script>
 
 <template>
-    <div :id="id" class="list" :class="{'list--disabled': !enabled && showActions, 'list--external': !isNormalInstalled}" role="list" :title="description">
-        <ExtCheckbox :disabled="enabled ? mayDisabled : mayEnabled" v-model:checked="enabled" v-if="showActions" />
+    <div :id="id" class="list" :class="{'list--disabled': !_enabled && showActions, 'list--highlight': highlight}" role="list" :title="description">
+        <ExtCheckbox :disabled="_enabled ? !mayDisable : !mayEnable" v-model="_enabled" v-if="showActions" />
         <label class="list__content">
-            <input class="list__native-input" type="checkbox" v-model="enabled" :disabled="!showActions" />
+            <input class="list__native-input" type="checkbox" v-model="_enabled" :disabled="!showActions" />
             <div class="list__icon" :style="{backgroundImage: `url(${icon})`}"><Extension v-if="!icon" :style="{fontSize:22, color:'var(--on-surface-tertiary)'}" /></div>
             <div class="list__title-wrap">
                 <div class="list__title">{{title}}</div>
@@ -129,13 +117,13 @@ export default({
         }
     }
 
-    &--external {
-        --external-bg: #f6edd3;
+    &--highlight {
+        --highlight-bg: #f6edd3;
         @media (prefers-color-scheme: dark) {
-            --external-bg: #3E3B30;
+            --highlight-bg: #3E3B30;
         }
 
-        background: var(--external-bg);
+        background: var(--highlight-bg);
 
         &:focus, &:hover {
             background: #ffe865;

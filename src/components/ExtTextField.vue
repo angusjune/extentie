@@ -1,21 +1,29 @@
-<script>
+<script lang="ts" setup>
 import Search from '~icons/material-symbols/search-rounded'
 import Close from '~icons/material-symbols/close-rounded'
 import ExtIconButton from '@/components/ExtIconButton.vue'
+import { ref, computed, onMounted } from 'vue';
 
-export default({
-    components: { Search, Close, ExtIconButton },
-    props: {
-        value: String,
-    },
-    emits: ['update:value'],
-    watch: {
-        value(val) {
-            this.$emit('update:value', val)
-            this.$refs.input.focus()
-        }
-    },
+const props = defineProps<{
+    value?: string,
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:value', value: typeof props.value): void
+}>()
+
+const value_ = computed({
+    get() { return props.value },
+    set(value) { emit('update:value', value) },
 })
+
+const vFocus = () => {
+    const input = ref<HTMLInputElement>()
+    onMounted(() => {
+        input.value?.focus()
+    })
+    return input
+}
 </script>
 
 <template>
@@ -26,10 +34,10 @@ export default({
             </slot>
         </div>
 
-        <input class="text-field__input" type="text" v-model="value" aria-label="search" ref="input" autofocus />
+        <input class="text-field__input" type="text" v-model="value_" aria-label="search" ref="input" v-focus />
 
-        <div class="text-field__icon" v-if="value">
-            <ExtIconButton  @click="value=''">
+        <div class="text-field__icon" v-if="value_">
+            <ExtIconButton  @click="value_=''">
                 <Close />
             </ExtIconButton>
         </div>

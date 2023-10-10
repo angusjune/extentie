@@ -1,21 +1,15 @@
-<script>
+<script lang="ts" setup>
 import OpenInNew from '~icons/material-symbols/open-in-new-rounded'
 
-export default {
-    components: {
-        OpenInNew,
-    },
-    props: {
-        title: String,
-        subtitle: String,
-        link: String,
-        hideSeparator: Boolean,
-    },
-    methods: {
-        onClick() {
-            chrome.tabs.create({url: this.link})
-        }
-    }
+const props = defineProps<{
+    title?: string,
+    subtitle?: string,
+    link?: string,
+    hideSeparator?: boolean,
+}>()
+
+function onClick() {
+    chrome.tabs.create({url: props.link})
 }
 </script>
 

@@ -1,16 +1,18 @@
-<script>
-export default({
-    props: {
-        checked: { type: Boolean },
-        disabled: { type: Boolean, default: false },
-    },
-    emits: ['update:checked'],
-    watch: {
-        checked(val) {
-            this.$emit('update:checked', val)
-        }
-    }
+<script lang="ts" setup>
+import { computed } from 'vue'
+const props = defineProps<{
+    modelValue?: boolean,
+    disabled?: boolean,
+}>()
+
+const checked = computed({
+    get() { return props.modelValue },
+    set(value) { emit('update:modelValue', value) },
 })
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: typeof props.modelValue): void
+}>()
 </script>
 
 <template>

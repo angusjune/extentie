@@ -1,14 +1,10 @@
 <script setup lang="ts">
 
-interface KrSelectItems {
-    value: string | number,
-}
-
 const props = withDefaults(defineProps<{
     title?: string
     subtitle?: string,
-    items: KrSelectItems[],
-    modelValue: string | number,
+    items: { value: string, label?: string, imgSrc?: string, path?: string, color?: string }[],
+    modelValue: string,
     hideSeparator?: boolean,
     distribution?: 'flex-start' | 'flex-end' | 'space-between' | 'space-around',
 }>(), {

@@ -10,7 +10,10 @@
     --form-field: #f1f3f4;
     --separator: rgba(0,0,0,.06);
 
-    --horizontal-padding: 16px;
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 16px;
+    --horizontal-padding: var(--spacing-3);
 
     @media (prefers-color-scheme: dark) {
         --theme: #8ab4f8;

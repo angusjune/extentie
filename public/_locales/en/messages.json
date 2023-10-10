@@ -34,15 +34,29 @@
   "delete_this": {
     "message": "Uninstall"
   },
-
+  "general": {
+    "message": "General"
+  },
   "open_option": {
     "message": "Settings"
+  },
+  "appearance": {
+    "message": "Appearance"
   },
   "layout": {
     "message": "Layout"
   },
+  "icon_style": {
+    "message": "Icon style"
+  },
+  "icon_color": {
+    "message": "Icon color"
+  },
   "set_up_user_groups": {
     "message": "Set up my groups"
+  },
+  "use_native_scroll_bar" : {
+    "message": "Use native scroll bar"
   },
   "show_user_groups_only": {
     "message": "Show my groups only"
@@ -58,6 +72,9 @@
   },
   "show_ext_desc_on_hover": {
     "message": "Show extension description on hover"
+  },
+  "hightlight_side_load": {
+    "message": "Highlight extensions not installed from Chrome Web Store"
   },
   "default": {
     "message": "Default"
@@ -83,5 +100,8 @@
   "others": {
     "description": "group name",
     "message": "Others"
+  },
+  "new_group": {
+    "message": "New Group"
   }
 }

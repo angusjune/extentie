@@ -5,7 +5,7 @@ import ExtIconButton from '@/components/ExtIconButton.vue'
 const props = withDefaults(defineProps<{
     title?: string,
     description?: string,
-    items: DefaultExtensionGroups[],
+    items: chrome.management.ExtensionInfo[],
     collapsed?: boolean,
 }>(), {
     collapsed: false,
