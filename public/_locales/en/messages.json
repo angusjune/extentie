@@ -46,6 +46,9 @@
   "appearance": {
     "message": "Appearance"
   },
+  "popup_height": {
+    "message": "Popup height"
+  },
   "layout": {
     "message": "Layout"
   },

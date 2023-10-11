@@ -83,7 +83,7 @@ const emit = defineEmits<{
             opacity: 0.95;
             stroke-dasharray: 12;
             stroke-dashoffset: 12;
-            transition: stroke-dashoffset cubic-bezier(0.33, 1, 0.68, 1) 0.3s;
+            transition: stroke-dashoffset cubic-bezier(0.33, 1, 0.68, 1) 0.15s;
         }
     }
 }

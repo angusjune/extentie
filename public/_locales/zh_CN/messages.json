@@ -50,7 +50,9 @@
   "appearance": {
     "message": "外观"
   },
-
+  "popup_height": {
+    "message": "弹窗高度"
+  },
   "layout": {
     "message": "布局"
   },
