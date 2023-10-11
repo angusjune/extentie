@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import KrSwitch from '@/components/KrSwitch.vue'
 
 const props = withDefaults(defineProps<{
-    modelValue: boolean,
+    modelValue?: boolean,
     title?: string,
     subtitle?: string,
     disabled?: boolean,

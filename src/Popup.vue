@@ -13,19 +13,19 @@ interface groupTitleMap {
 }
 
 const groupTitles: groupTitleMap = {
-    'extension': 'extension',
-    'login_screen_extension': 'extension',
-    'packaged_app': 'app',
-    'legacy_packaged_app': 'app',
-    'hosted_app': 'app',
-    'theme': 'theme',
+    'extension': msg('extension'),
+    'login_screen_extension': msg('extension'),
+    'packaged_app': msg('app'),
+    'legacy_packaged_app': msg('app'),
+    'hosted_app': msg('app'),
+    'theme': msg('theme'),
 }
 
 const extensions: chrome.management.ExtensionInfo[] = reactive([])
 const options = reactive(<ExtentieOptions>{})
 const userGroupSetup: UserGroupInfo[] = reactive([])
 
-const defaultExtensionGroups = reactive(<DefaultExtensionGroups>{})
+const defaultExtensionGroups = reactive(<DefaultExtensionGroups>{}) // extension groups grouped by type
 const userExtensionGroups = reactive(<DefaultExtensionGroups>{})
 
 const currentTab = ref(0)
@@ -59,9 +59,16 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
 })
 
 function setEnabled(id: chrome.management.ExtensionInfo['id'], enabled: boolean) {
-    chrome.management.setEnabled(id, enabled, () => {
-        if (chrome.runtime.lastError) { console.error(chrome.runtime.lastError) }
-    })
+    chrome.runtime.sendMessage({ type: "SET_ENABLED", data: { id, enabled } })
+}
+
+function setGroupEnabled(id: string, enabled: boolean) {
+    const group = userGroupSetup.find(group => group.id === id)
+    if (!group) return
+
+    for (const ext of group.order) {
+        setEnabled(ext, enabled)
+    }
 }
 
 function getDefaultGroups() {
@@ -103,14 +110,14 @@ function getDefaultGroups() {
 function getUserGroups() {
     let groups = <DefaultExtensionGroups>{}
 
-    for (const {id, name, order: extOrder} of userGroupSetup) {
+    for (const {id, name, order} of userGroupSetup) {
         if (!groups[id]) {
             groups[id] = new ExtensionGroup(id, name)
         }
 
         groups[id].name = name || ''
         /** @ts-ignore */
-        groups[id].extensions = extOrder.filter(extId => extensions.findIndex(ext => ext.id === extId) > -1).map(extId => extensions.find(ext => ext.id === extId))
+        groups[id].extensions = order.filter(extId => extensions.findIndex(ext => ext.id === extId) > -1).map(extId => extensions.find(ext => ext.id === extId))
     }
 
     return groups
@@ -202,6 +209,14 @@ const transitionName = computed(()=> {
     return currentTab.value === 0 ? 'slide-left' : 'slide-right'
 })
 
+const showEnableAll = computed(() => {
+    if (options.showEnableAllButton) {
+        return currentTab.value === 1 || options.showUserGroupsOnly
+    } else {
+        return false
+    }
+})
+
 watch(currentTab, (val) => {
     chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: {selectedTab: val} })
 })
@@ -216,7 +231,13 @@ watch(shownGroups, val => {
         <ExtInput v-model:value="searchTerm" />
     </div>
 
-    <main class="lists-container">
+    <main 
+        class="lists-container" 
+        :class="!options.useNativeScrollbar && 'lists-container--styled-scrollbar'" 
+        :id="`panel-${currentTab}`" 
+        :style="{...listLayoutProps}" 
+        tabindex="0"
+    >
 
         <TransitionGroup :name="transitionName" v-if="Object.entries(shownGroups).length > 0">
         <template v-for="([id, {extensions, name}], i) in Object.entries(shownGroups)" :key="id">
@@ -227,7 +248,10 @@ watch(shownGroups, val => {
                 :description="extensions.filter((item: chrome.management.ExtensionInfo) => item?.enabled).length + ' / ' + extensions.length" 
                 :items="extensions"
                 :collapsed="collapsed.includes(id)"
+                :enabled="extensions.every((item: chrome.management.ExtensionInfo) => item?.enabled)"
                 @update:collapsed="groupToggleCollapsed(id)"
+                @update:enabled="setGroupEnabled(id, $event)"
+                :showEnableAll="showEnableAll"
             >
 
                 <template #item="{item}: {item: chrome.management.ExtensionInfo}">
@@ -236,13 +260,12 @@ watch(shownGroups, val => {
                         :id="item.id"
                         :icons="item.icons"
                         :mayDisable="item.mayDisable"
-                        :mayEnable="item.mayEnable"
+                        :mayEnable="((item as any).mayEnable)"
                         :optionsUrl="item.optionsUrl"
                         :title="options.displayFullName ? item.name : (item.shortName || item.name)"
                         :description="options.showExtensionDescriptionOnHover ? item.description : undefined"
-                        :highlight="item.installType !== 'normal'"
+                        :highlight="options.highlightSideLoadExtensions && (item.installType !== 'normal')"
                         :isApp="item.type.includes('app')"
-                        :style="{...listLayoutProps}"
                         @update:enabled="setEnabled(item.id, $event)"
                     />
                 </template>
@@ -256,7 +279,7 @@ watch(shownGroups, val => {
         </div>
     </main>
 
-    <div class="tab-bar-container" v-if="userGroupSetup.length > 0 && !options.showUserGroupsOnly">
+    <div class="tab-bar-container" v-if="userGroupSetup.length > 0 && !options.showUserGroupsOnly" role="presentation">
         <ExtTabBar v-model="currentTab" :tabs="tabItems" />
     </div>
 </template>
@@ -279,33 +302,36 @@ watch(shownGroups, val => {
     box-sizing: border-box;
     overflow: auto;
     flex: 1;
-    padding: 8px 0;
+    padding-bottom: var(--spacing-2);
+    margin-top: var(--spacing-2);
 
-    &::-webkit-scrollbar {
-        width: 16px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: rgba(var(--scrollbar-thumb-color-rgb), 0);
-        border: 4px solid transparent;
-        border-radius: 100px;
-        background-clip: content-box;
-
-        &:hover {
-            background: rgba(var(--scrollbar-thumb-color-rgb), 0.2);
+    &--styled-scrollbar {
+        &::-webkit-scrollbar {
+            width: 16px;
         }
-    }
 
-    &:hover {
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         &::-webkit-scrollbar-thumb {
-            background: rgba(var(--scrollbar-thumb-color-rgb), 0.1);
+            background: rgba(var(--scrollbar-thumb-color-rgb), 0);
             border: 4px solid transparent;
             border-radius: 100px;
             background-clip: content-box;
+
+            &:hover {
+                background: rgba(var(--scrollbar-thumb-color-rgb), 0.2);
+            }
+        }
+
+        &:hover {
+            &::-webkit-scrollbar-thumb {
+                background: rgba(var(--scrollbar-thumb-color-rgb), 0.1);
+                border: 4px solid transparent;
+                border-radius: 100px;
+                background-clip: content-box;
+            }
         }
     }
 
@@ -314,6 +340,12 @@ watch(shownGroups, val => {
         place-items: center;
         height: 100%;
     }
+}
+
+.tab-bar-container {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
 }
 
 .slide-left-move,

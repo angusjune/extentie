@@ -31,6 +31,10 @@
     "message": "設定分組"
   },
 
+  "general": {
+    "message": "一般"
+  },
+
   "delete_this": {
     "message": "移除"
   },
@@ -39,14 +43,31 @@
     "message": "設定"
   },
 
+  "launch_app": {
+    "message": "開啟應用"
+  },
+
+  "appearance": {
+    "message": "外觀"
+  },
+
   "layout": {
     "message": "布局"
   },
+  "icon_style": {
+    "message": "Icon 樣式"
+  },
+  "icon_color": {
+    "message": "Icon 顏色"
+  },
   "set_up_user_groups": {
-    "message": "設定我的分組"
+    "message": "設定你的分組"
   },
   "show_user_groups_only": {
-    "message": "僅顯示我設置的分組"
+    "message": "僅顯示你設置的分組"
+  },
+  "use_native_scroll_bar" : {
+    "message": "使用原生滾動條"
   },
   "show_search": {
     "message": "顯示搜尋框"
@@ -59,6 +80,12 @@
   },
   "show_ext_desc_on_hover": {
     "message": "滑鼠懸停時顯示擴充功能的描述"
+  },
+  "show_enable_all_button": {
+    "message": "顯示開關分組內所有擴充勾選框"
+  },
+  "highlight_side_load": {
+    "message": "高亮非从 Chrome 應用程式商店安裝的擴充"
   },
   "default": {
     "message": "預設"
@@ -87,6 +114,18 @@
   "others": {
     "description": "group name",
     "message": "其他"
+  },
+  "new_group": {
+    "message": "新分組"
+  },
+  "ungrouped": {
+    "message": "未分組"
+  },
+  "customize_title": {
+    "description": "group customization page title",
+    "message": "設置分組 - Extentie"
+  },
+  "drop_here": {
+    "message": "拖至此處"
   }
-
 }

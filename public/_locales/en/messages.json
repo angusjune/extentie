@@ -40,6 +40,9 @@
   "open_option": {
     "message": "Settings"
   },
+  "launch_app": {
+    "message": "Launch app"
+  },
   "appearance": {
     "message": "Appearance"
   },
@@ -53,13 +56,13 @@
     "message": "Icon color"
   },
   "set_up_user_groups": {
-    "message": "Set up my groups"
+    "message": "Set up your groups"
   },
   "use_native_scroll_bar" : {
     "message": "Use native scroll bar"
   },
   "show_user_groups_only": {
-    "message": "Show my groups only"
+    "message": "Show your groups only"
   },
   "show_search": {
     "message": "Show search bar"
@@ -73,7 +76,10 @@
   "show_ext_desc_on_hover": {
     "message": "Show extension description on hover"
   },
-  "hightlight_side_load": {
+  "show_enable_all_button": {
+    "message": "Show enable all button"
+  },
+  "highlight_side_load": {
     "message": "Highlight extensions not installed from Chrome Web Store"
   },
   "default": {
@@ -103,5 +109,15 @@
   },
   "new_group": {
     "message": "New Group"
+  },
+  "ungrouped": {
+    "message": "Ungrouped"
+  },
+  "customize_title": {
+    "description": "group customization page title",
+    "message": "Group Set Up - Extentie"
+  },
+  "drop_here": {
+    "message": "Drop here"
   }
 }

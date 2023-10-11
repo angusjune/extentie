@@ -58,7 +58,8 @@ watch(options, (val: ExtentieOptions) => {
             <KrToggleRow :title="msg('display_full_name')" v-model="options.displayFullName" />
             <KrToggleRow :title="msg('enabled_ext_on_top')" v-model="options.enabledExtensionsOnTop" />
             <KrToggleRow :title="msg('show_ext_desc_on_hover')" v-model="options.showExtensionDescriptionOnHover" />
-            <KrToggleRow :title="msg('hightlight_side_load')" v-model="options.highlightSideLoadExtensions" hide-separator />
+            <KrToggleRow :title="msg('show_enable_all_button')" v-model="options.showEnableAllButton" />
+            <KrToggleRow :title="msg('highlight_side_load')" v-model="options.highlightSideLoadExtensions" hide-separator />
         </KrSection>
 
         <KrSection :title="msg('appearance')">

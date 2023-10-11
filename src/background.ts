@@ -66,6 +66,14 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
         case "SET_USER_GROUPS":
             userGroupsStorage.set(data);
             break;
+        case "SET_ENABLED":
+            chrome.management.setEnabled(data.id, data.enabled, () => {
+                if (chrome.runtime.lastError) { console.error(chrome.runtime.lastError) }
+                getExtensions().then(res => {
+                    chrome.runtime.sendMessage(<Message>{ type: "EXT_CHANGED", data: res });
+                });
+            });
+            break;
         case "UNINSTALL":
             chrome.management.uninstall(data.id, { showConfirmDialog: true }).then(() => {
                 getExtensions().then(res => {
@@ -94,7 +102,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         contexts: ['action'],
-        title: msg('set_groups'),
+        title: msg('set_up_user_groups'),
         id: 'customize'
     });
     chrome.contextMenus.create({

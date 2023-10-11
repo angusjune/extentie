@@ -2,7 +2,7 @@
 import Search from '~icons/material-symbols/search-rounded'
 import Close from '~icons/material-symbols/close-rounded'
 import ExtIconButton from '@/components/ExtIconButton.vue'
-import { ref, computed, onMounted } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
     value?: string,
@@ -17,12 +17,8 @@ const value_ = computed({
     set(value) { emit('update:value', value) },
 })
 
-const vFocus = () => {
-    const input = ref<HTMLInputElement>()
-    onMounted(() => {
-        input.value?.focus()
-    })
-    return input
+const vFocus = {
+    mounted: (el: HTMLInputElement) => el.focus()
 }
 </script>
 

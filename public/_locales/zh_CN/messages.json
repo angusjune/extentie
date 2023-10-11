@@ -35,18 +35,39 @@
     "message": "卸载"
   },
 
+  "general": {
+    "message": "通用"
+  },
+
   "open_option": {
     "message": "设置"
+  },
+
+  "launch_app": {
+    "message": "启动应用"
+  },
+
+  "appearance": {
+    "message": "外观"
   },
 
   "layout": {
     "message": "布局"
   },
+  "icon_style": {
+    "message": "图标样式"
+  },
+  "icon_color": {
+    "message": "图标颜色"
+  },
   "set_up_user_groups": {
-    "message": "设置我的分组"
+    "message": "设置你的分组"
+  },
+  "use_native_scroll_bar" : {
+    "message": "使用原生滚动条"
   },
   "show_user_groups_only": {
-    "message": "仅显示我设置的分组"
+    "message": "仅显示你设置的分组"
   },
   "show_search": {
     "message": "显示搜索框"
@@ -59,6 +80,12 @@
   },
   "show_ext_desc_on_hover": {
     "message": "鼠标悬停时显示扩展的描述"
+  },
+  "show_enable_all_button": {
+    "message": "显示开关组内所有扩展勾选框"
+  },
+  "highlight_side_load": {
+    "message": "高亮不是从 Chrome 网上应用店安装的扩展"
   },
   "default": {
     "message": "默认"
@@ -87,6 +114,18 @@
   "others": {
     "description": "group name",
     "message": "其他"
+  },
+  "new_group": {
+    "message": "新分组"
+  },
+  "ungrouped": {
+    "message": "未分组"
+  },
+  "customize_title": {
+    "description": "group customization page title",
+    "message": "设置分组 - Extentie"
+  },
+  "drop_here": {
+    "message": "拖至此处"
   }
-
 }

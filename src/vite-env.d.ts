@@ -12,6 +12,7 @@ declare interface ExtentieOptions {
   enabledExtensionsOnTop: boolean;
   showExtensionDescriptionOnHover: boolean;
   highlightSideLoadExtensions: boolean;
+  showEnableAllButton: boolean;
   layout: 'default' | 'compact' | 'comfortable',
   collapsed: string,
   showUserGroupsOnly: boolean,
@@ -47,6 +48,7 @@ declare enum MessageType {
   SET_USER_GROUPS = 'SET_USER_GROUPS',
   UNINSTALL = 'UNINSTALL',
   EXT_CHANGED = 'EXT_CHANGED',
+  SET_ENABLED = 'SET_ENABLED',
 }
 
 declare type ExtensionGroup = import('./ExtensionGroup').ExtensionGroup;

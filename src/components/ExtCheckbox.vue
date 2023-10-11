@@ -16,10 +16,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <label class="checkbox">
+    <label class="checkbox" role="button">
         <input class="checkbox__input" type="checkbox" v-model="checked" :disabled="disabled" />
-        <span class="checkbox__indicator">
-            <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L8 12L13 7" stroke="var(--checkbox-stroke-color, #fff)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="checkbox__indicator" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L8 12L13 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
     </label>
 </template>
@@ -54,6 +54,7 @@ const emit = defineEmits<{
     }
 
     &__indicator {
+        color: var(--checkbox-stroke-color, #fff);
         box-sizing: border-box;
         display: inline-grid;
         place-items: center;

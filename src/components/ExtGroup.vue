@@ -1,23 +1,35 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import ChevronRight from '~icons/material-symbols/chevron-right-rounded'
 import ExtIconButton from '@/components/ExtIconButton.vue'
+import ExtCheckbox from '@/components/ExtCheckbox.vue'
 
 const props = withDefaults(defineProps<{
     title?: string,
     description?: string,
     items: chrome.management.ExtensionInfo[],
     collapsed?: boolean,
+    showEnableAll?: boolean,
+    enabled?: boolean,
 }>(), {
     collapsed: false,
+    showEnableAll: false,
+    enabled: false,
 })
 
 const emit = defineEmits<{
     (e: 'update:collapsed', value: typeof props.collapsed): void
+    (e: 'update:enabled', value: typeof props.enabled): void
 }>()
 
 function toggle() {
     emit('update:collapsed', !props.collapsed)
 }
+
+const _enabled = computed({
+    get() { return props.enabled },
+    set(value) { emit('update:enabled', value) },
+})
 
 </script>
 
@@ -25,6 +37,9 @@ function toggle() {
     <section class="group">
         
         <header class="group__header" @click="toggle">
+            <div class="group__leading-action" v-if="showEnableAll">
+                <ExtCheckbox v-model="_enabled" />
+            </div>
             <h1 class="group__title">{{ title }}</h1>
             <div class="group__action">
                 <ExtIconButton class="chevron" :class="{ expanded: !collapsed }">
@@ -35,7 +50,7 @@ function toggle() {
             
         </header>
 
-        <div class="group__content" v-show="!collapsed">
+        <div class="group__content" v-show="!collapsed" :aria-expanded="collapsed ? 'false' : 'true'" role="list">
             <template v-for="(item, index) in items" :key="item.id">
                 <slot name="item" :item="item" :index="index" />
             </template>
@@ -48,16 +63,17 @@ function toggle() {
 .group {
 
     &__header {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        grid-template-areas: "title action description";
-        grid-gap: 4px;
+        display: flex;
         align-items: center;
-        padding: 8px var(--horizontal-padding);
+        padding: var(--spacing-2) var(--horizontal-padding);
         cursor: default;
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        z-index: 1;
 
         &:hover {
-            background: linear-gradient(90deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);
+            background-image: linear-gradient(90deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);
 
             .chevron {
                 opacity: 0.35;
@@ -65,8 +81,11 @@ function toggle() {
         }
     }
 
+    &__leading-action {
+        padding-right: calc(var(--list-spacing-base) * 4);
+    }
+
     &__title {
-        grid-area: title;
         font-size: 18px;
         font-weight: 500;
         text-transform: capitalize;
@@ -74,12 +93,9 @@ function toggle() {
         margin: 0;
     }
 
-    &__description {
-        grid-area: description;
-    }
-
     &__action {
-        grid-area: action;
+        flex: 1;
+        padding: 0 var(--spacing-1);
 
         .chevron {
             opacity: 0.35;

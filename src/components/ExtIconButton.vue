@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 const props = defineProps<{
-    ariaLabel?: string,
     disabled?: boolean,
 }>()
 </script>
 
 <template>
-    <button class="icon-button" :aria-label="ariaLabel" :disabled="disabled">
+    <button class="icon-button" :disabled="disabled">
         <slot />
     </button>
 </template>

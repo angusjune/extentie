@@ -11,31 +11,36 @@ import Delete from '~icons/material-symbols/delete-rounded'
 import DragHandle from '~icons/material-symbols/drag-indicator'
 import { msg } from '@/utils/i18n'
 
-const extensions: chrome.management.ExtensionInfo[] = reactive([])
+// change page title
+document.title = msg('customize_title')
+
+const extensions = ref<chrome.management.ExtensionInfo[]>([])
 const userGroupSetup: UserGroupInfo[] = reactive([])
 const tempUserGroupSetup: UserGroupInfo[] = reactive([])
+const options = ref<ExtentieOptions>({} as ExtentieOptions)
 const searchTerm = ref<string>('')
 
 chrome.runtime.sendMessage({ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
-    Object.assign(extensions, res.extensions)
+    extensions.value = res.extensions
+    options.value = res.options
     Object.assign(userGroupSetup, res.userGroups.userGroups)
     Object.assign(tempUserGroupSetup, res.userGroups.userGroups)
 })
 
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
     if (type === 'EXT_CHANGED') {
-        Object.assign(extensions, data)
+        extensions.value = data
     }
 })
 
 function getExtInfoFromId(id: chrome.management.ExtensionInfo['id']) {
-    return extensions.find(ext => ext.id === id)
+    return extensions.value.find(ext => ext.id === id)
 }
 
 function createGroup() {
     const newGroup: UserGroupInfo = {
         id: uuid(),
-        name: msg('New Group'),
+        name: msg('new_group'),
         order: [],
     }
 
@@ -91,10 +96,10 @@ function sortUngrouped(sortable: typeof Sortable) {
 }
 
 const ungroupedExtensions = computed(() => {
-    let lists = extensions
+    let lists = extensions.value
     
     if (searchTerm) {
-        lists = extensions.filter(ext => {
+        lists = extensions.value.filter(ext => {
             return (ext.name.toLowerCase().includes(searchTerm.value.toLowerCase()) || ext.shortName.toLowerCase().includes(searchTerm.value))
         })
     }
@@ -123,7 +128,7 @@ watch(userGroupSetup, val => {
         <section class="section section--fixed">
             <div class="card">
                 <header class="card__header card__header--column">
-                    <h1 class="card__title">Ungrouped</h1>
+                    <h1 class="card__title">{{ msg('ungrouped') }}</h1>
                     <div class="card__search">
                         <ExtTextField v-model:value="searchTerm" />
                     </div>
@@ -132,6 +137,7 @@ watch(userGroupSetup, val => {
 
                 <Sortable
                     :list="ungroupedExtensions"
+                    class="card__content"
                     item-key="id"
                     tag="div"
                     :options="{
@@ -143,12 +149,13 @@ watch(userGroupSetup, val => {
                         },
                     }"
                 >
-                    <template #item="{element}">
+                    <template #item="{element}: {element: chrome.management.ExtensionInfo}">
                         <ExtList
                             v-bind="element"
                             :data-id="element.id"
                             :title="element.name" 
                             :showActions="false"
+                            :highlight="options.highlightSideLoadExtensions && (element.installType !== 'normal')"
                         />
                     </template>
                 </Sortable>
@@ -193,6 +200,7 @@ watch(userGroupSetup, val => {
                             animation: 150,
                             store: { set: setGroupExtensions },
                         }"
+                        :data-empty-text="msg('drop_here')"
                     >
                         <template #item="{element: id}">
                             <ExtList
@@ -201,6 +209,7 @@ watch(userGroupSetup, val => {
                                 :data-id="id"
                                 :title="getExtInfoFromId(id)?.name ?? ''"
                                 :showActions="false"
+                                :highlight="options.highlightSideLoadExtensions && (getExtInfoFromId(id)?.installType !== 'normal')"
                             />
                         </template>
                     </Sortable>
@@ -246,19 +255,17 @@ watch(userGroupSetup, val => {
 }
 
 .card {
+    display: flex;
+    flex-direction: column;
     max-height: 100%;
     background: var(--surface);
     border-radius: 16px;
-    overflow: hidden auto;
+    overflow: hidden;
 
     &:hover, &:focus {
         .card__actions {
             visibility: visible;
         }
-    }
-
-    &--dragging {
-
     }
 
     &--ghost {
@@ -275,9 +282,6 @@ watch(userGroupSetup, val => {
         padding: var(--horizontal-padding);
         background: var(--surface);
         width: 100%;
-        position: sticky;
-        top: 0;
-        z-index: 1;
         box-sizing: border-box;
         display: flex;
         align-items: center;
@@ -287,6 +291,11 @@ watch(userGroupSetup, val => {
             flex-direction: column;
             align-items: flex-start;
         }
+    }
+
+    &__content {
+        flex: 1;
+        overflow: auto;
     }
 
     &__actions {
@@ -349,7 +358,7 @@ watch(userGroupSetup, val => {
     border-radius: 0 0 16px 16px;
 
     &:after {
-        content: 'Drop here';
+        content: attr(data-empty-text);
         position: absolute;
         top: 50%;
         left: 50%;
