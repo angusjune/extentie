@@ -1,9 +1,13 @@
 @import url(./base.css);
 
+html {
+    max-height: 600px; /* max height of chrome popup */
+}
+
 body {
     width: 340px;
     display: flex;
     flex-direction: column;
-    height: 500px;
+    height: 100%;
     background: var(--surface);
 }

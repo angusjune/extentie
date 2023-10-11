@@ -13,6 +13,7 @@ declare interface ExtentieOptions {
   showExtensionDescriptionOnHover: boolean;
   highlightSideLoadExtensions: boolean;
   showEnableAllButton: boolean;
+  popupHeight: number;
   layout: 'default' | 'compact' | 'comfortable',
   collapsed: string,
   showUserGroupsOnly: boolean,

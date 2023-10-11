@@ -2,6 +2,7 @@
 import { onMounted, ref, watch, computed } from 'vue'
 import KrToggleRow from '@/components/KrToggleRow.vue'
 import KrLinkRow from '@/components/KrLinkRow.vue'
+import KrSliderRow from '@/components/KrSliderRow.vue'
 import KrSelectGroup from '@/components/KrSelectGroup.vue'
 import KrSelectItem from '@/components/KrSelectItem.vue'
 import KrSection from '@/components/KrSection.vue'
@@ -63,6 +64,8 @@ watch(options, (val: ExtentieOptions) => {
         </KrSection>
 
         <KrSection :title="msg('appearance')">
+
+            <KrSliderRow :title="msg('popup_height')" v-model="options.popupHeight" :min="300" :max="600" :step="10" />
 
             <KrSelectGroup :title="msg('layout')" :items="layoutOptions" v-model="options.layout" distribution="space-between">
                 <template #items="{item, selected}">

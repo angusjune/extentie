@@ -11,6 +11,7 @@ export const optionsStorage = new OptionsSync<CustomOptions>({
 		showExtensionDescriptionOnHover: false,
 		highlightSideLoadExtensions: true,
 		showEnableAllButton: true,
+		popupHeight: 500,
 		layout: 'default',
 		collapsed: JSON.stringify(['others']),
 		showUserGroupsOnly: false,

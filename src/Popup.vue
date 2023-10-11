@@ -13,12 +13,12 @@ interface groupTitleMap {
 }
 
 const groupTitles: groupTitleMap = {
-    'extension': msg('extension'),
-    'login_screen_extension': msg('extension'),
-    'packaged_app': msg('app'),
-    'legacy_packaged_app': msg('app'),
-    'hosted_app': msg('app'),
-    'theme': msg('theme'),
+    'extension': msg('extensions'),
+    'login_screen_extension': msg('extensions'),
+    'packaged_app': msg('applications'),
+    'legacy_packaged_app': msg('applications'),
+    'hosted_app': msg('applications'),
+    'theme': msg('themes'),
 }
 
 const extensions: chrome.management.ExtensionInfo[] = reactive([])
@@ -47,6 +47,9 @@ chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: chro
 
     collapsed.push(...JSON.parse(res.options.collapsed))
     currentTab.value = res.options.selectedTab
+
+    document.documentElement.style.height = res.options.popupHeight + 'px'
+
     hasInit.value = true
 })
 
@@ -219,10 +222,6 @@ const showEnableAll = computed(() => {
 
 watch(currentTab, (val) => {
     chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: {selectedTab: val} })
-})
-
-watch(shownGroups, val => {
-    console.log(val)
 })
 </script>
 
