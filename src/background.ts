@@ -70,9 +70,6 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
         case "SET_ENABLED":
             chrome.management.setEnabled(data.id, data.enabled, () => {
                 if (chrome.runtime.lastError) { console.error(chrome.runtime.lastError) }
-                getExtensions().then(res => {
-                    chrome.runtime.sendMessage(<Message>{ type: "EXT_CHANGED", data: res });
-                });
             });
             break;
         case "UNINSTALL":

@@ -31,6 +31,28 @@ const _enabled = computed({
     set(value) { emit('update:enabled', value) },
 })
 
+function focusNext() {
+    const items = document.querySelectorAll('[role="listitem"]')
+    const focused = document.activeElement as HTMLElement
+    const index = Array.from(items).indexOf(focused)
+    if (index === -1) {
+        (items[0] as HTMLElement)?.focus()
+    } else {
+        (items[index + 1] as HTMLElement)?.focus()
+    }
+}
+
+function focusPrev() {
+    const items = document.querySelectorAll('[role="listitem"]')
+    const focused = document.activeElement as HTMLElement
+    const index = Array.from(items).indexOf(focused)
+    if (index === -1) {
+        (items[items.length - 1] as HTMLElement)?.focus()
+    } else {
+        (items[index - 1] as HTMLElement)?.focus()
+    }
+}
+
 </script>
 
 <template>
@@ -50,7 +72,7 @@ const _enabled = computed({
             
         </header>
 
-        <div class="group__content" v-show="!collapsed" :aria-expanded="collapsed ? 'false' : 'true'" role="list">
+        <div class="group__content" v-show="!collapsed" :aria-expanded="collapsed ? 'false' : 'true'" role="list" @keydown.down.prevent="focusNext" @keydown.up.prevent="focusPrev">
             <template v-for="(item, index) in items" :key="item.id">
                 <slot name="item" :item="item" :index="index" />
             </template>
@@ -72,7 +94,7 @@ const _enabled = computed({
         background: var(--surface);
         z-index: 1;
 
-        &:hover {
+        &:hover, &:focus-within {
             background-image: linear-gradient(90deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);
 
             .chevron {

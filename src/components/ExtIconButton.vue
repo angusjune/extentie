@@ -30,6 +30,10 @@ const props = defineProps<{
         transform: scale(1);
     }
 
+    &:focus-visible {
+        outline: 0;
+    }
+
     &:before {
         content: '';
         position: absolute;

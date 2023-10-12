@@ -65,7 +65,9 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
 })
 
 function setEnabled(id: chrome.management.ExtensionInfo['id'], enabled: boolean) {
-    chrome.runtime.sendMessage({ type: "SET_ENABLED", data: { id, enabled } })
+    chrome.runtime.sendMessage({ type: "SET_ENABLED", data: { id, enabled } }).then(() => {
+        extensions.find(ext => ext.id === id)!.enabled = enabled
+    })
 }
 
 function setGroupEnabled(id: string, enabled: boolean) {

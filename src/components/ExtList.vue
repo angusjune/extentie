@@ -54,7 +54,16 @@ const _enabled = computed({
 </script>
 
 <template>
-    <div :id="id" class="list" :class="{'list--disabled': !_enabled && showActions, 'list--highlight': highlight}" role="listitem" tabindex="0" :title="description">
+    <div 
+        :id="id" 
+        class="list" 
+        :class="{'list--disabled': !_enabled && showActions, 'list--highlight': highlight}" 
+        role="listitem" 
+        tabindex="0" 
+        :title="description" 
+        @keydown.enter="_enabled = !_enabled"
+        @keydown.delete="onDelete"
+    >
         <ExtCheckbox :disabled="_enabled ? !mayDisable : !mayEnable" v-model="_enabled" v-if="showActions" :aria-labelledby="`label-${id}`" />
         <label class="list__content" :id="`label-${id}`">
             <input class="list__native-input" type="checkbox" v-model="_enabled" :disabled="!showActions" />
@@ -174,7 +183,7 @@ const _enabled = computed({
             opacity: 0.4;
             transition: opacity ease-in-out 0.2s;
 
-            &:hover, &:focus {
+            &:hover, &:focus, &:focus-within {
                 opacity: 0.8;
             }
 
