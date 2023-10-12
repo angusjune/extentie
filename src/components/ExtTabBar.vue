@@ -15,8 +15,7 @@ function selectTab(index: number) {
 }
 
 // switch to the next tab
-function focusNext(e: KeyboardEvent) {
-    e.preventDefault()
+function focusNext() {
     const next = props.modelValue + 1
     if (next < props.tabs.length) {
         emit('update:modelValue', next)
@@ -26,8 +25,7 @@ function focusNext(e: KeyboardEvent) {
 }
 
 // switch to the previous tab
-function focusPrev(e: KeyboardEvent) {
-    e.preventDefault()
+function focusPrev() {
     const prev = props.modelValue - 1
     if (prev >= 0) {
         emit('update:modelValue', prev)
@@ -38,7 +36,7 @@ function focusPrev(e: KeyboardEvent) {
 </script>
 
 <template>
-    <div class="tab-bar" role="tablist" @keydown.left="focusNext" @keydown.right="focusPrev">
+    <div class="tab-bar" role="tablist" @keydown.left.prevent="focusNext" @keydown.right.prevent="focusPrev">
         <button
             v-for="(tab, index) in tabs"
             :key="index"

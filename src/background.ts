@@ -40,6 +40,7 @@ function setIcon(name: ExtentieOptions['iconStyle'], iconColor: ExtentieOptions[
 // get all options
 (async () => {
     const options = await optionsStorage.getAll();
+    Object.assign(optionsStored, options);
 
     chrome.storage.local.get('colorScheme', ({ colorScheme }) => {
         Object.assign(localStored, { colorScheme });
@@ -80,6 +81,9 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
                     chrome.runtime.sendMessage(<Message>{ type: "EXT_CHANGED", data: res });
                 })
             });
+            break;
+        case "SET_COLOR_SCHEME":
+            chrome.storage.local.set({ colorScheme: data.colorScheme });
             break;
         default:
             break;

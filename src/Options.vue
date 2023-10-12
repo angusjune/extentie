@@ -8,11 +8,14 @@ import KrSelectItem from '@/components/KrSelectItem.vue'
 import KrSection from '@/components/KrSection.vue'
 import { iconPaths, iconColors } from './action-icon'
 import { msg } from '@/utils/i18n'
+import ListComfortable from '@/assets/list-comfortable.svg'
+import ListDefault from '@/assets/list-default.svg'
+import ListCompact from '@/assets/list-compact.svg'
 
 const layoutOptions =  [
-    { value: 'compact', label: msg('compact'), imgSrc: 'assets/list-compact.svg' },
-    { value: 'default', label: msg('default'), imgSrc: 'assets/list-default.svg' },
-    { value: 'comfortable', label: msg('comfortable'), imgSrc: 'assets/list-comfortable.svg' },
+    { value: 'compact', label: msg('compact'), imgSrc: ListCompact },
+    { value: 'default', label: msg('default'), imgSrc: ListDefault },
+    { value: 'comfortable', label: msg('comfortable'), imgSrc: ListComfortable },
 ]
 
 const iconStyleOptions =  [
@@ -70,7 +73,7 @@ watch(options, (val: ExtentieOptions) => {
             <KrSelectGroup :title="msg('layout')" :items="layoutOptions" v-model="options.layout" distribution="space-between">
                 <template #items="{item, selected}">
                     <KrSelectItem :value="item.value" :label="item.label" :selected="selected">
-                        <img :src="item.imgSrc" :alt="item.label" />
+                        <component :is="item.imgSrc" />
                     </KrSelectItem>
                 </template>
             </KrSelectGroup>

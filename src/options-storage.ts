@@ -23,7 +23,8 @@ export const optionsStorage = new OptionsSync<CustomOptions>({
 	migrations: [
 		(savedOptions, currentDefaults) => {},
 		OptionsSync.migrations.removeUnused
-	]
+	],
+	logging: false,
 });
 
 export const userGroupsStorage = new OptionsSync({
@@ -31,5 +32,6 @@ export const userGroupsStorage = new OptionsSync({
 		userGroups: [],
 	} as any,
 	storageName: 'userGroups',
-	migrations: [ OptionsSync.migrations.removeUnused, ]
+	migrations: [ OptionsSync.migrations.removeUnused, ],
+	logging: false,
 });

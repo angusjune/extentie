@@ -19,11 +19,11 @@
         --theme: #8ab4f8;
         --background: #202224;
         --surface: #292a2d;
-        --on-surface-primary: #fff;
+        --on-surface-primary: rgba(255,255,255,.87);
         --on-surface-secondary: #9aa0a6;
         --on-theme-primary:#202124;
         --ripple: rgba(138,180,248,.2);
-        --form-field: rgba(0,0,0,.5);
+        --form-field: #1d1e20;
         --separator: rgba(255,255,255,.08);
 
     }

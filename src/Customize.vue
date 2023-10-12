@@ -33,6 +33,9 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
     }
 })
 
+const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+chrome.runtime.sendMessage({ type: "SET_COLOR_SCHEME", data: { colorScheme: isDarkMode ? 'dark' : 'light' } })
+
 function getExtInfoFromId(id: chrome.management.ExtensionInfo['id']) {
     return extensions.value.find(ext => ext.id === id)
 }
@@ -332,6 +335,11 @@ watch(userGroupSetup, val => {
         cursor: grab;
         font-size: 18px;
         opacity: 0.35;
+        color: var(--on-surface-secondary);
+
+        &:active {
+            opacity: 0.8;
+        }
     }
 }
 
@@ -345,6 +353,7 @@ watch(userGroupSetup, val => {
     border: 1px dashed var(--on-surface-tertiary);
     height: 100px;
     cursor: default;
+    color: var(--on-surface-secondary);
 
     &:hover, &:focus {
         background: rgba(0,0,0,.06);

@@ -119,14 +119,16 @@ const _enabled = computed({
 
     &--highlight {
         --highlight-bg: #f6edd3;
+        --highlight-bg-hover: #ffe865;
         @media (prefers-color-scheme: dark) {
             --highlight-bg: #3E3B30;
+            --highlight-bg-hover: #4E4B40;
         }
 
         background: var(--highlight-bg);
 
         &:focus, &:hover {
-            background: #ffe865;
+            background: var(--highlight-bg-hover);
         }
     }
 

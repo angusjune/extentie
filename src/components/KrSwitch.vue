@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
-    modelValue: boolean,
+    modelValue?: boolean,
     disabled?: boolean,
     inset?: boolean,
 }>(), {
+    modelValue: false,
     disabled: false,
     inset: false,
 })
@@ -44,12 +45,12 @@ const modelValue_ = computed({
 .switch {
     --track-height: 12px;
     --track-width: 28px;
-    --track-background-unchecked: var(--on-surface-secondary);
+    --track-background-unchecked: #bec1c5;
     --track-background-checked: var(--theme);
 
     --thumb-size: 16px;
     --thumb-box-shadow: 0 1px 3px 0 rgba(0,0,0,.4);
-    --thumb-background-unchecked: var(--surface);
+    --thumb-background-unchecked: #fff;
     --thumb-background-checked: var(--theme);
 
     --hs: 212, 9%;
@@ -58,6 +59,8 @@ const modelValue_ = computed({
     @media (prefers-color-scheme: dark) {
         --hs: 0, 0%;
         --l: 32%;
+        --track-background-unchecked: #9ba0a5;
+        --thumb-background-unchecked: #dadce0;
     }
 
     display: inline-flex;

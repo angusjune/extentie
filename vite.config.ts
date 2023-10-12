@@ -4,6 +4,7 @@ import vue from "@vitejs/plugin-vue";
 import Icons from 'unplugin-icons/vite'
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.json'
+import svgLoader from 'vite-svg-loader'
 
 export default defineConfig({
   resolve: {
@@ -26,5 +27,6 @@ export default defineConfig({
       autoInstall: true,
       scale: 1,
     }),
+    svgLoader({ defaultImport: 'component' })
   ]
 });

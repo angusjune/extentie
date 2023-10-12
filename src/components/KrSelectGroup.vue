@@ -4,10 +4,11 @@ const props = withDefaults(defineProps<{
     title?: string
     subtitle?: string,
     items: { value: string, label?: string, imgSrc?: string, path?: string, color?: string }[],
-    modelValue: string,
+    modelValue?: string,
     hideSeparator?: boolean,
     distribution?: 'flex-start' | 'flex-end' | 'space-between' | 'space-around',
 }>(), {
+    modelValue: undefined,
     hideSeparator: false,
     distribution: 'flex-start'
 })

@@ -50,6 +50,7 @@ declare enum MessageType {
   UNINSTALL = 'UNINSTALL',
   EXT_CHANGED = 'EXT_CHANGED',
   SET_ENABLED = 'SET_ENABLED',
+  SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
 }
 
 declare type ExtensionGroup = import('./ExtensionGroup').ExtensionGroup;

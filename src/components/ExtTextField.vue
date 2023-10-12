@@ -56,6 +56,7 @@ const vFocus = {
     &__input {
         background: transparent;
         border: 0;
+        color: var(--on-surface-primary);
 
         &:focus {
             outline: none;
@@ -67,6 +68,7 @@ const vFocus = {
         font-size: 18px;
         opacity: 0.5;
         transition: opacity 0.15s ease;
+        color: var(--on-surface-secondary);
     }
 }
 </style>

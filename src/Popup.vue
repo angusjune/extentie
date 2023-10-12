@@ -53,6 +53,9 @@ chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: chro
     hasInit.value = true
 })
 
+const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+chrome.runtime.sendMessage({ type: "SET_COLOR_SCHEME", data: { colorScheme: isDarkMode ? 'dark' : 'light' } })
+
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
     if (type === 'EXT_CHANGED') {
         Object.assign(extensions, data)
@@ -236,6 +239,8 @@ watch(currentTab, (val) => {
         :id="`panel-${currentTab}`" 
         :style="{...listLayoutProps}" 
         tabindex="0"
+        @keydown.left.prevent="currentTab = currentTab === 0 ? 1 : 0"
+        @keydown.right.prevent="currentTab = currentTab === 0 ? 1 : 0"
     >
 
         <TransitionGroup :name="transitionName" v-if="Object.entries(shownGroups).length > 0">

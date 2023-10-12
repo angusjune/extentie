@@ -93,6 +93,10 @@ const _enabled = computed({
         margin: 0;
     }
 
+    &__description {
+        color: var(--on-surface-secondary);
+    }
+
     &__action {
         flex: 1;
         padding: 0 var(--spacing-1);

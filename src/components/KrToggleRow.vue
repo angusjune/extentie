@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
     disabled?: boolean,
     hideSeparator?: boolean,
 }>(), {
+    modelValue: false,
     disabled: false,
     hideSeparator: false,
 })
