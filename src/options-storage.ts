@@ -17,7 +17,7 @@ export const optionsStorage = new OptionsSync<CustomOptions>({
 		showUserGroupsOnly: false,
 		selectedTab: 0,
 		useNativeScrollbar: false,
-		iconStyle: 'classic',
+		iconStyle: 'geometric',
 		iconColor: 'auto',
 	},
 	migrations: [
