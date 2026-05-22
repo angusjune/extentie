@@ -1,0 +1,40 @@
+@use '../styles/khroma/body';
+@use '../styles/khroma/checkbox';
+@use '../styles/khroma/textfield';
+
+:root {
+  --list-focus-bg: #d8eaff;
+  --list-dev-bg: #fff3b1;
+  --list-dev-focus-bg: #ffe865;
+  --list-actions-item-fill: #828282;
+  --checkbox-stroke: rgba(0, 0, 0, 0.2);
+  --checkbox-checked-container: #1a73e8;
+  --checkbox-focus-stroke: rgba(0, 0, 0, 0.36);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+body {
+  width: 320px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --list-focus-bg: #323542;
+    --list-dev-bg: #504636;
+    --list-dev-focus-bg: #645641;
+    --list-actions-item-fill: #cbcbcb;
+    --checkbox-stroke: rgba(255, 255, 255, 0.3);
+  }
+}
