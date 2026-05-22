@@ -1,0 +1,28 @@
+@use '../styles/khroma/body';
+@use '../styles/khroma/checkbox';
+
+:root {
+  --checkbox-stroke: rgba(0, 0, 0, 0.2);
+  --checkbox-checked-container: #1a73e8;
+  --checkbox-focus-stroke: rgba(0, 0, 0, 0.36);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-size: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --checkbox-stroke: rgba(255, 255, 255, 0.3);
+  }
+}
