@@ -1,0 +1,86 @@
+@use 'sass:color';
+@use 'sass:map';
+
+$theme-colors: (
+  'background': #f1f3f4,
+  'text': rgba(0, 0, 0, 0.35),
+  'text-focus': rgba(0, 0, 0, 0.8),
+  'outline-focus': #a9c3f7,
+  'icon': #686a6e,
+);
+
+$theme-colors-dark: (
+  'background': #202124,
+  'text': rgba(255, 255, 255, 0.45),
+  'text-focus': rgba(255, 255, 255, 0.8),
+  'outline-focus': #396286,
+  'icon': #7c7e83,
+);
+
+@mixin theme-kd-textfield($dark-theme: false) {
+  $var: $theme-colors;
+  @if $dark-theme {
+    $var: $theme-colors-dark;
+  }
+
+  @each $style in map.keys($var) {
+    --kd-textfield-#{$style}: #{map.get($var, $style)};
+  }
+
+  --kd-textfield-background-hover: #{color.adjust(map.get($var, 'background'), $lightness: 1%)};
+  --kd-textfield-background-focus: #{color.adjust(map.get($var, 'background'), $lightness: -4%)};
+}
+
+.kd-textfield {
+  @include theme-kd-textfield($dark-theme: false);
+
+  position: relative;
+  width: 100%;
+  height: 28px;
+
+  &__input {
+    font-size: 14px;
+    color: var(--kd-textfield-text);
+    background-color: var(--kd-textfield-background);
+    width: 100%;
+    height: 100%;
+    border-radius: 22px;
+    border: 0;
+    padding-left: 36px;
+    text-overflow: ellipsis;
+    transition: background linear 0.12s;
+
+    &:hover {
+      background: var(--kd-textfield-background-hover);
+    }
+
+    &:focus {
+      background: var(--kd-textfield-background-focus);
+      color: var(--kd-textfield-text-focus);
+      text-overflow: clip;
+      outline: none;
+      box-shadow: 0 0 0 2px var(--kd-textfield-outline-focus);
+    }
+  }
+
+  &__leading-icon {
+    width: 20px;
+    position: absolute;
+    top: 0;
+    left: 8px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg path {
+      fill: var(--kd-textfield-icon);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .kd-textfield {
+    @include theme-kd-textfield($dark-theme: true);
+  }
+}
