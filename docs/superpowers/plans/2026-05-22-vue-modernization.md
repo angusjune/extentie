@@ -11,8 +11,9 @@
 **Reference spec:** `docs/superpowers/specs/2026-05-22-vue-modernization-design.md`
 
 **Conventions for every task:**
+
 - Yarn is the package manager. A hook blocks hand-editing `yarn.lock`; only `yarn` commands may change it.
-- Dependency versions below are a *floor* — run `yarn install` and bump to current latest; verify `@crxjs/vite-plugin` v2 is compatible with the installed Vite major.
+- Dependency versions below are a _floor_ — run `yarn install` and bump to current latest; verify `@crxjs/vite-plugin` v2 is compatible with the installed Vite major.
 - Commit after each task with the message shown in its final step.
 
 ---
@@ -22,6 +23,7 @@
 Sets up the new build system. The extension will not build until Task 10 (no HTML entries yet); this task is verified by `yarn install` succeeding.
 
 **Files:**
+
 - Create: `package.json` (full rewrite), `tsconfig.json`, `env.d.ts`, `vite.config.ts`, `vitest.config.ts`, `manifest.config.ts`, `eslint.config.js`, `.prettierrc`, `.gitignore` (rewrite)
 - Delete: `config/paths.js`, `config/webpack.common.js`, `config/webpack.config.js`, `.jshintrc`, `size-plugin.json`, `public/manifest.json`
 
@@ -236,6 +238,7 @@ git commit -m "build: replace webpack/JSHint with Vite + CRXJS + TypeScript + ES
 ## Task 2: Shared types & `categorize()`
 
 **Files:**
+
 - Create: `src/types.ts`
 - Test: `test/categorize.test.ts`
 
@@ -319,6 +322,7 @@ git commit -m "feat: add shared types and categorize()"
 Replaces the convoluted, array-mutating `getIcon` from `popup.js`.
 
 **Files:**
+
 - Create: `src/lib/icon.ts`
 - Test: `test/icon.test.ts`
 
@@ -411,6 +415,7 @@ git commit -m "feat: add pure pickIcon() helper"
 Replaces the inline sort and the pointless `Promise`-wrapped search in `popup.js`.
 
 **Files:**
+
 - Create: `src/lib/sort.ts`, `src/lib/filter.ts`
 - Test: `test/sort.test.ts`, `test/filter.test.ts`
 
@@ -526,6 +531,7 @@ git commit -m "feat: add pure sortExtensions() and filterByName() helpers"
 Framework-free, typed wrappers over the `chrome.*` APIs. No unit tests (they are thin pass-throughs over browser APIs); verified by `yarn typecheck`.
 
 **Files:**
+
 - Create: `src/lib/extensions.ts`, `src/lib/i18n.ts`, `src/lib/theme.ts`
 
 - [ ] **Step 1: Create `src/lib/extensions.ts`**
@@ -608,6 +614,7 @@ git commit -m "feat: add typed chrome API adapters"
 The reactive layer. `useExtensions` is a module-scoped singleton acting as the store; `useSettings` wraps `chrome.storage.sync`. No unit tests (Vue reactivity + chrome APIs); verified by `yarn typecheck`.
 
 **Files:**
+
 - Create: `src/composables/useExtensions.ts`, `src/composables/useSettings.ts`
 
 - [ ] **Step 1: Create `src/composables/useExtensions.ts`**
@@ -747,6 +754,7 @@ git commit -m "feat: add useExtensions and useSettings composables"
 Moves the khroma partials that are actually used into `src/styles/khroma/` and drops the two dead ones. `_theme.scss` references undefined Sass namespaces (`custom-properties`, `theme-color`, `css`) and is imported by nothing; `_constants.scss` is used only by `_theme.scss`.
 
 **Files:**
+
 - Move: `src/khroma/_body.scss` → `src/styles/khroma/_body.scss` (unchanged)
 - Move: `src/khroma/_checkbox.scss` → `src/styles/khroma/_checkbox.scss` (unchanged)
 - Create: `src/styles/khroma/_textfield.scss` (modernized rewrite)
@@ -874,6 +882,7 @@ git commit -m "refactor: migrate khroma SCSS theme, drop dead partials"
 Replaces `src/extList.js`. Fixes the `mayEnable`/`mayDisable` dead feature (#1): the checkbox is disabled when the user cannot change the state. Action buttons become real `<button>`s with i18n'd `aria-label`s (#7). The checkbox visuals come from the global `_checkbox.scss` (imported by `popup.scss` in Task 10) — not duplicated here.
 
 **Files:**
+
 - Create: `src/components/ExtItem.vue`
 
 - [ ] **Step 1: Create `src/components/ExtItem.vue`**
@@ -923,7 +932,13 @@ function onToggle(event: Event): void {
         @change="onToggle"
       />
       <span class="checkbox-indicator" role="presentation">
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="10"
+          height="8"
+          viewBox="0 0 10 8"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path d="M1 3L4 6L9 1" stroke="#fff" stroke-width="2" />
         </svg>
       </span>
@@ -938,7 +953,13 @@ function onToggle(event: Event): void {
         :aria-label="`${t('delete_this')} ${name}`"
         @click="uninstall(ext.id)"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M4.5 14.25C4.5 15.075 5.175 15.75 6 15.75H12C12.825 15.75 13.5 15.075 13.5 14.25V5.25H4.5V14.25ZM14.25 3H11.625L10.875 2.25H7.125L6.375 3H3.75V4.5H14.25V3Z"
           />
@@ -952,7 +973,13 @@ function onToggle(event: Event): void {
         :aria-label="`${t('launch')} ${name}`"
         @click="launch(ext.id)"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M14.25 14.25H3.75V3.75H9V2.25H3.75C2.9175 2.25 2.25 2.925 2.25 3.75V14.25C2.25 15.075 2.9175 15.75 3.75 15.75H14.25C15.075 15.75 15.75 15.075 15.75 14.25V9H14.25V14.25ZM10.5 2.25V3.75H13.1925L5.82 11.1225L6.8775 12.18L14.25 4.8075V7.5H15.75V2.25H10.5Z"
           />
@@ -966,7 +993,13 @@ function onToggle(event: Event): void {
         :aria-label="`${t('open_option')} ${name}`"
         @click="openOptions(ext.optionsUrl!)"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M14.355 9.702C14.382 9.477 14.4 9.243 14.4 9C14.4 8.757 14.382 8.523 14.346 8.298L15.867 7.11C16.002 7.002 16.038 6.804 15.957 6.651L14.517 4.158C14.427 3.996 14.238 3.942 14.076 3.996L12.285 4.716C11.907 4.428 11.511 4.194 11.07 4.014L10.8 2.106C10.773 1.926 10.62 1.8 10.44 1.8H7.55999C7.37999 1.8 7.23599 1.926 7.20899 2.106L6.93899 4.014C6.49799 4.194 6.09299 4.437 5.72399 4.716L3.93299 3.996C3.77099 3.933 3.58199 3.996 3.49199 4.158L2.05199 6.651C1.96199 6.813 1.99799 7.002 2.14199 7.11L3.66299 8.298C3.62699 8.523 3.59999 8.766 3.59999 9C3.59999 9.234 3.61799 9.477 3.65399 9.702L2.13299 10.89C1.99799 10.998 1.96199 11.196 2.04299 11.349L3.48299 13.842C3.57299 14.004 3.76199 14.058 3.92399 14.004L5.71499 13.284C6.09299 13.572 6.48899 13.806 6.92999 13.986L7.19999 15.894C7.23599 16.074 7.37999 16.2 7.55999 16.2H10.44C10.62 16.2 10.773 16.074 10.791 15.894L11.061 13.986C11.502 13.806 11.907 13.563 12.276 13.284L14.067 14.004C14.229 14.067 14.418 14.004 14.508 13.842L15.948 11.349C16.038 11.187 16.002 10.998 15.858 10.89L14.355 9.702V9.702ZM8.99999 11.7C7.51499 11.7 6.29999 10.485 6.29999 9C6.29999 7.515 7.51499 6.3 8.99999 6.3C10.485 6.3 11.7 7.515 11.7 9C11.7 10.485 10.485 11.7 8.99999 11.7Z"
           />
@@ -1106,6 +1139,7 @@ git commit -m "feat: add ExtItem.vue (replaces extList.js)"
 `ExtGroup` is a titled section that self-hides when empty; `SearchBar` is the search input, driven by `v-model`.
 
 **Files:**
+
 - Create: `src/components/ExtGroup.vue`, `src/components/SearchBar.vue`
 
 - [ ] **Step 1: Create `src/components/ExtGroup.vue`**
@@ -1182,7 +1216,13 @@ defineEmits<{ 'update:modelValue': [value: string] }>();
         @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <span class="kd-textfield__leading-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z"
           />
@@ -1222,6 +1262,7 @@ git commit -m "feat: add ExtGroup.vue and SearchBar.vue"
 ## Task 10: Popup app — `Popup.vue` + entry point
 
 **Files:**
+
 - Create: `src/popup/Popup.vue`, `src/popup/main.ts`, `src/popup/index.html`, `src/popup/popup.scss`
 
 - [ ] **Step 1: Create `src/popup/popup.scss`**
@@ -1357,6 +1398,7 @@ git commit -m "feat: add Vue popup app"
 ## Task 11: Options app — `Options.vue` + entry point
 
 **Files:**
+
 - Create: `src/options/Options.vue`, `src/options/main.ts`, `src/options/index.html`, `src/options/options.scss`
 
 - [ ] **Step 1: Create `src/options/options.scss`**
@@ -1412,7 +1454,13 @@ onMounted(() => {
     <label class="options__row" for="search-toggle">
       <input id="search-toggle" v-model="searchEnabled" class="checkbox-native" type="checkbox" />
       <span class="checkbox-indicator" role="presentation">
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="10"
+          height="8"
+          viewBox="0 0 10 8"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path d="M1 3L4 6L9 1" stroke="#fff" stroke-width="2" />
         </svg>
       </span>
@@ -1480,6 +1528,7 @@ git commit -m "feat: add Vue options app"
 Removes the typo key `ext_short_ame` and the unused `gotoWebStore` / `gotoExtension` keys; adds `search`, `launch`, and `show_search_bar`. After this task the `en` and `zh_CN` key sets match exactly (11 keys each).
 
 **Files:**
+
 - Modify: `public/_locales/en/messages.json`, `public/_locales/zh_CN/messages.json`
 
 - [ ] **Step 1: Replace `public/_locales/en/messages.json`**
@@ -1586,6 +1635,7 @@ git commit -m "i18n: drop dead keys, add search/launch/show_search_bar"
 Deletes the LitElement/webpack-era source now that the Vue apps replace it.
 
 **Files:**
+
 - Delete: `src/popup.js`, `src/options.js`, `src/extList.js`, `src/popup.scss`, `src/options.scss`, `public/popup.html`, `public/options.html`, `public/img/`
 
 - [ ] **Step 1: Confirm `public/img/` is unreferenced**
@@ -1624,6 +1674,7 @@ git commit -m "refactor: remove legacy LitElement/webpack source"
 Brings the repo's tooling and documentation in line with the new stack.
 
 **Files:**
+
 - Delete: `.claude/hooks/jshint-lint.sh`, `.claude/skills/new-lit-component/`
 - Create: `.claude/hooks/eslint-lint.sh`, `.claude/skills/new-vue-component/SKILL.md`
 - Modify: `.claude/settings.json`, `CLAUDE.md`, `.claude/skills/add-i18n-string/SKILL.md`
@@ -1814,7 +1865,7 @@ Extentie's UI is built from Vue 3 single-file components (see
 
 Replace the whole contents of `.claude/skills/add-i18n-string/SKILL.md`:
 
-```markdown
+````markdown
 ---
 name: add-i18n-string
 description: Add or update a localized message key across every _locales/<lang>/messages.json file. Use when adding or changing user-facing text in the popup or options UI.
@@ -1839,6 +1890,8 @@ Current locales: `en` (default), `zh_CN`.
      "message": "English text here"
    }
    ```
+````
+
 3. Provide a real translation for each non-English locale. If you cannot
    translate a locale (e.g. `zh_CN`), ask the user — do not leave English
    text in a non-English file.
@@ -1853,14 +1906,15 @@ Current locales: `en` (default), `zh_CN`.
 Before finishing, compare the key sets of all locale files — they must match
 exactly. Report any pre-existing drift you find (for example, a key present in
 `en/messages.json` but missing from `zh_CN/messages.json`) so it can be fixed.
-```
+
+````
 
 - [ ] **Step 6: Commit**
 
 ```bash
 git add .claude/ CLAUDE.md
 git commit -m "docs: update hooks, CLAUDE.md, and skills for the Vue stack"
-```
+````
 
 ---
 
@@ -1924,4 +1978,3 @@ Confirm `git log --oneline` shows the task-by-task history and the working tree 
 ## Done
 
 The extension is now Vue 3 + Vite + TypeScript, fully built into `dist/`, with passing lint/type/test checks and verified behavior. No Chrome Web Store submission is part of this plan — that is a separate, deliberate release step.
-

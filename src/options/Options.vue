@@ -15,7 +15,13 @@ onMounted(() => {
     <label class="options__row" for="search-toggle">
       <input id="search-toggle" v-model="searchEnabled" class="checkbox-native" type="checkbox" />
       <span class="checkbox-indicator" role="presentation">
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="10"
+          height="8"
+          viewBox="0 0 10 8"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path d="M1 3L4 6L9 1" stroke="#fff" stroke-width="2" />
         </svg>
       </span>

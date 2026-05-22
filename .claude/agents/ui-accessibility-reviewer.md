@@ -14,6 +14,7 @@ When invoked, review the current UI changes and report findings.
 ## Review checklist
 
 ### Keyboard & focus
+
 - Every interactive element is reachable and operable by keyboard. Anchor tags
   used as buttons (`<a href="#">` in `extList.js`) must have a correct
   `tabindex` and activate on Enter/Space — or be real `<button>` elements.
@@ -24,6 +25,7 @@ When invoked, review the current UI changes and report findings.
   the tab order.
 
 ### Semantics & ARIA
+
 - Meaningful roles (`role="listitem"`, etc.) and labels. Icon-only controls
   have a present, descriptive `aria-label`.
 - Form controls have associated `<label>`s. Decorative SVGs are hidden from
@@ -31,6 +33,7 @@ When invoked, review the current UI changes and report findings.
 - Custom elements expose state (checked / disabled / expanded) accessibly.
 
 ### Visual
+
 - Text and UI contrast meets WCAG AA (4.5:1 for text, 3:1 for large text and
   icons) in both light and dark themes (`prefers-color-scheme`, see
   `src/khroma/`).
@@ -38,6 +41,7 @@ When invoked, review the current UI changes and report findings.
 - Transitions and animations respect `prefers-reduced-motion`.
 
 ### Localization-aware layout
+
 - Layout tolerates longer translated strings without clipping essential text.
   `text-overflow: ellipsis` on a long extension name is acceptable; truncating
   labels or actions is not.

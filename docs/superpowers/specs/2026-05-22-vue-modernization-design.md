@@ -14,15 +14,15 @@ behaviour and visual design essentially unchanged.
 
 ## Decisions
 
-| Topic | Decision |
-|---|---|
-| Scope | Full modernization |
+| Topic     | Decision                                                           |
+| --------- | ------------------------------------------------------------------ |
+| Scope     | Full modernization                                                 |
 | Framework | Vue 3 (latest, 3.5.x), `<script setup lang="ts">`, Composition API |
-| Build | Vite + `@crxjs/vite-plugin` (v2) + `@vitejs/plugin-vue` |
-| Language | TypeScript, `strict: true` |
-| UI parity | Keep overall design; fix bugs + light polish (a11y, consistency) |
-| Testing | Vitest, unit tests only (pure functions) |
-| State | One module-scoped composable (`useExtensions`) — no Pinia (YAGNI) |
+| Build     | Vite + `@crxjs/vite-plugin` (v2) + `@vitejs/plugin-vue`            |
+| Language  | TypeScript, `strict: true`                                         |
+| UI parity | Keep overall design; fix bugs + light polish (a11y, consistency)   |
+| Testing   | Vitest, unit tests only (pure functions)                           |
+| State     | One module-scoped composable (`useExtensions`) — no Pinia (YAGNI)  |
 
 ## Non-goals
 
@@ -125,15 +125,15 @@ derived, never incremented by hand.
 
 ## Bug fixes & light polish
 
-| # | Issue today | Fix |
-|---|---|---|
-| 1 | `mayEnable`/`mayDisable` read but never used — the checkbox toggles extensions that cannot be toggled and fails silently | `ExtItem` disables the checkbox when `mayDisable === false` (enabled item) or `mayEnable === false` (disabled item) |
-| 2 | Duplicate `class` attribute on the themes list in `popup.html` | Gone — markup is component-rendered |
-| 3 | Dead `chrome.runtime.sendMessage({ isBrowserDark })` (no receiver exists) | Removed |
-| 4 | `getIcon` mutates its input array via `.reverse()` | Pure `pickIcon()` |
-| 5 | Pointless `Promise` wrapper around search | Reactive `computed` filter |
-| 6 | Manual enabled-count `++`/`--` bookkeeping | Derived `computed` counts + live `chrome.management` events |
-| 7 | Action buttons are `<a href="#">`; delete is `tabindex="-1"` (keyboard users cannot uninstall) | Real `<button>` elements, keyboard-reachable, i18n'd `aria-label`s |
+| #   | Issue today                                                                                                              | Fix                                                                                                                 |
+| --- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| 1   | `mayEnable`/`mayDisable` read but never used — the checkbox toggles extensions that cannot be toggled and fails silently | `ExtItem` disables the checkbox when `mayDisable === false` (enabled item) or `mayEnable === false` (disabled item) |
+| 2   | Duplicate `class` attribute on the themes list in `popup.html`                                                           | Gone — markup is component-rendered                                                                                 |
+| 3   | Dead `chrome.runtime.sendMessage({ isBrowserDark })` (no receiver exists)                                                | Removed                                                                                                             |
+| 4   | `getIcon` mutates its input array via `.reverse()`                                                                       | Pure `pickIcon()`                                                                                                   |
+| 5   | Pointless `Promise` wrapper around search                                                                                | Reactive `computed` filter                                                                                          |
+| 6   | Manual enabled-count `++`/`--` bookkeeping                                                                               | Derived `computed` counts + live `chrome.management` events                                                         |
+| 7   | Action buttons are `<a href="#">`; delete is `tabindex="-1"` (keyboard users cannot uninstall)                           | Real `<button>` elements, keyboard-reachable, i18n'd `aria-label`s                                                  |
 
 ## i18n cleanup
 
@@ -149,11 +149,11 @@ derived, never incremented by hand.
 - After cleanup, the `en` and `zh_CN` key sets must match exactly. New keys and
   their translations (authored from the function each serves):
 
-  | key | `en` | `zh_CN` |
-  |---|---|---|
-  | `search` | Search extensions by name | 按名称搜索扩展程序 |
-  | `launch` | Launch | 启动 |
-  | `show_search_bar` | Show search bar | 显示搜索栏 |
+  | key               | `en`                      | `zh_CN`            |
+  | ----------------- | ------------------------- | ------------------ |
+  | `search`          | Search extensions by name | 按名称搜索扩展程序 |
+  | `launch`          | Launch                    | 启动               |
+  | `show_search_bar` | Show search bar           | 显示搜索栏         |
 
 ## Tooling
 
@@ -184,7 +184,7 @@ derived, never incremented by hand.
 ## Testing
 
 Vitest, unit tests only — `sort.test.ts`, `filter.test.ts`, `icon.test.ts`
-covering the pure functions. chrome.* APIs are not exercised by tests.
+covering the pure functions. chrome.\* APIs are not exercised by tests.
 
 ## Docs to update
 
