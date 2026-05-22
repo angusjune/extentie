@@ -2,42 +2,34 @@
   "extName": {
     "message": "Extentie - 扩展程序管理器"
   },
-
   "extDesc": {
     "message": "漂亮而简单的扩展程序管理工具"
   },
-
   "extDefaultTitle": {
     "message": "管理扩展"
   },
-
   "extensions": {
     "message": "扩展"
   },
-
   "applications": {
     "message": "应用"
   },
-
   "themes": {
     "message": "主题"
   },
-
-  "gotoWebStore": {
-    "message": "前往 Chrome 网上应用店"
-  },
-
-  "gotoExtension": {
-    "message": "管理扩展"
-  },
-
   "delete_this": {
     "message": "卸载"
   },
-
   "open_option": {
     "message": "设置"
+  },
+  "launch": {
+    "message": "启动"
+  },
+  "search": {
+    "message": "按名称搜索扩展程序"
+  },
+  "show_search_bar": {
+    "message": "显示搜索栏"
   }
-
-
 }

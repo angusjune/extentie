@@ -2,44 +2,34 @@
   "extName": {
     "message": "Extentie - extension manager"
   },
-
-  "ext_short_ame": {
-    "message": "Extentie"
-  },
-
   "extDesc": {
     "message": "A simple and elegant Chrome extension manager allows you manage your extensions in a popup window."
   },
-
   "extDefaultTitle": {
     "message": "Manage Extensions"
   },
-
   "extensions": {
     "message": "Extensions"
   },
-
   "applications": {
     "message": "Applications"
   },
-
   "themes": {
     "message": "Themes"
   },
-
-  "gotoWebStore": {
-    "message": "Chrome Web Store"
-  },
-
-  "gotoExtension": {
-    "message": "Manage Extensions"
-  },
-
   "delete_this": {
     "message": "Uninstall"
   },
-
   "open_option": {
     "message": "Settings"
+  },
+  "launch": {
+    "message": "Launch"
+  },
+  "search": {
+    "message": "Search extensions by name"
+  },
+  "show_search_bar": {
+    "message": "Show search bar"
   }
 }
