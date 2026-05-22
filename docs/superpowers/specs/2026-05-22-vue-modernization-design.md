@@ -144,11 +144,16 @@ derived, never incremented by hand.
   them) for action labels; add a `launch` key.
 - Replace the hardcoded "Enabled search" string on the options page with a new
   i18n key.
-- `gotoWebStore` / `gotoExtension` appear unused. **Open question for the user:**
-  remove them, or keep for planned UI?
-- After cleanup, the `en` and `zh_CN` key sets must match exactly. New keys
-  (`search`, `launch`, the enabled-search label) need `zh_CN` translations —
-  **ask the user** for these rather than guessing.
+- Remove `gotoWebStore` / `gotoExtension` — confirmed unused, deleted from all
+  locale files.
+- After cleanup, the `en` and `zh_CN` key sets must match exactly. New keys and
+  their translations (authored from the function each serves):
+
+  | key | `en` | `zh_CN` |
+  |---|---|---|
+  | `search` | Search extensions by name | 按名称搜索扩展程序 |
+  | `launch` | Launch | 启动 |
+  | `show_search_bar` | Show search bar | 显示搜索栏 |
 
 ## Tooling
 
