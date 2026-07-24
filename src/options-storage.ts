@@ -3,6 +3,8 @@ import type { Options } from 'webext-options-sync';
 
 type CustomOptions = ExtentieOptions & Options
 
+// Keep migrations out of these long-lived instances. OptionsSync gates getAll()
+// on install detection when migrations are present, delaying every cold worker wake.
 export const optionsStorage = new OptionsSync<CustomOptions>({
 	defaults: { 
 		enabledSearch: true,
@@ -20,10 +22,6 @@ export const optionsStorage = new OptionsSync<CustomOptions>({
 		iconStyle: 'geometric',
 		iconColor: 'auto',
 	},
-	migrations: [
-		(savedOptions, currentDefaults) => {},
-		OptionsSync.migrations.removeUnused
-	],
 	logging: false,
 });
 
@@ -32,6 +30,5 @@ export const userGroupsStorage = new OptionsSync({
 		userGroups: [],
 	} as any,
 	storageName: 'userGroups',
-	migrations: [ OptionsSync.migrations.removeUnused, ],
 	logging: false,
 });
