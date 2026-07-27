@@ -1,180 +1,187 @@
 {
   "ext_name": {
-    "message": "Extentie - extension manager"
+    "message": "Extentie - 擴充功能管理器"
   },
 
   "ext_desc": {
-    "message": "A simple and elegant Chrome extension manager allows you manage your extensions in a popup window."
+    "message": "漂亮而簡單的擴充功能管理工具"
   },
 
   "extensions": {
-    "message": "Extensions"
+    "message": "擴充功能"
   },
 
   "applications": {
-    "message": "Applications"
+    "message": "應用程式"
   },
 
   "themes": {
-    "message": "Themes"
+    "message": "主題"
   },
 
   "go_to_webstore": {
-    "message": "Chrome Web Store"
+    "message": "前往 Chrome 線上應用程式商店"
   },
 
   "manage_extensions": {
-    "message": "Manage Extensions"
+    "message": "管理擴充功能"
+  },
+
+  "general": {
+    "message": "一般"
   },
 
   "delete_this": {
-    "message": "Uninstall"
+    "message": "移除"
   },
-  "general": {
-    "message": "General"
-  },
+
   "open_option": {
-    "message": "Settings"
+    "message": "設定"
   },
+
   "launch_app": {
-    "message": "Launch app"
+    "message": "開啟應用"
   },
+
   "appearance": {
-    "message": "Appearance"
+    "message": "外觀"
   },
   "popup_height": {
-    "message": "Popup height"
+    "message": "彈出式視窗高度"
   },
   "layout": {
-    "message": "Layout"
+    "message": "布局"
   },
   "icon_style": {
-    "message": "Icon style"
+    "message": "Icon 樣式"
   },
   "icon_color": {
-    "message": "Icon color"
+    "message": "Icon 顏色"
   },
   "set_up_user_groups": {
-    "message": "Set up your groups"
-  },
-  "use_native_scroll_bar" : {
-    "message": "Use native scroll bar"
+    "message": "設定你的分組"
   },
   "show_user_groups_only": {
-    "message": "Show your groups only"
+    "message": "僅顯示你設置的分組"
+  },
+  "use_native_scroll_bar" : {
+    "message": "使用原生滾動條"
   },
   "show_search": {
-    "message": "Show search bar"
+    "message": "顯示搜尋框"
   },
   "show_settings_button": {
     "description": "toggles the button in the popup that opens these settings",
-    "message": "Show settings button"
+    "message": "顯示設定按鈕"
   },
   "display_full_name": {
-    "message": "Display extension full name"
+    "message": "顯示擴充功能的完整名稱"
   },
   "enabled_ext_on_top": {
-    "message": "Place enabled extensions on top"
+    "message": "優先展示已啟用的擴充功能"
   },
   "show_ext_desc_on_hover": {
-    "message": "Show extension description on hover"
+    "message": "滑鼠懸停時顯示擴充功能的描述"
   },
   "show_enable_all_button": {
-    "message": "Show enable all button"
+    "message": "顯示開關分組內所有擴充勾選框"
   },
   "highlight_side_load": {
-    "message": "Highlight extensions not installed from Chrome Web Store"
+    "message": "高亮非从 Chrome 應用程式商店安裝的擴充"
   },
   "default": {
-    "message": "Default"
+    "message": "預設"
   },
   "compact": {
-    "message": "Compact"
+    "message": "緊湊"
   },
   "comfortable": {
-    "message": "Comfortable"
+    "message": "寬鬆"
   },
   "no_results": {
     "description": "empty list or empty search results",
-    "message": "No results"
+    "message": "無結果"
   },
+
   "all": {
     "description": "tab name",
-    "message": "All"
+    "message": "全部"
   },
+
   "groups": {
     "description": "tab name",
-    "message": "Groups"
+    "message": "分組"
   },
+
   "others": {
     "description": "group name",
-    "message": "Others"
+    "message": "其他"
   },
   "new_group": {
-    "message": "New Group"
+    "message": "新分組"
   },
   "ungrouped": {
-    "message": "Ungrouped"
+    "message": "未分組"
   },
   "customize_title": {
     "description": "group customization page title",
-    "message": "Group Set Up - Extentie"
+    "message": "設置分組 - Extentie"
   },
   "drop_here": {
-    "message": "Drop here"
+    "message": "拖至此處"
   },
   "delete_group": {
     "description": "delete button label and confirmation dialog title on the group set up page",
-    "message": "Delete group"
+    "message": "刪除分組"
   },
   "delete_group_confirm": {
     "description": "$NAME$ is the name of the group about to be deleted",
-    "message": "Delete “$NAME$”? The extensions in it stay installed.",
+    "message": "確定刪除「$NAME$」嗎？組內的擴充功能不會被移除。",
     "placeholders": {
       "name": {
         "content": "$1",
-        "example": "Work"
+        "example": "工作"
       }
     }
   },
   "untitled_group": {
     "description": "stands in for the name of a group that was left unnamed",
-    "message": "Untitled group"
+    "message": "未命名分組"
   },
   "delete": {
     "description": "button label",
-    "message": "Delete"
+    "message": "刪除"
   },
   "needs_permission_review": {
     "description": "tooltip for an extension Chrome disabled because it wants more permissions",
-    "message": "Requires more permissions. Opens Chrome's extensions page."
+    "message": "需要更多權限，將開啟 Chrome 擴充功能頁面。"
   },
   "export_groups": {
-    "message": "Export groups"
+    "message": "匯出分組"
   },
   "export_groups_desc": {
-    "message": "Save your groups to a JSON file"
+    "message": "將你的分組儲存為 JSON 檔案"
   },
   "export": {
     "description": "button label",
-    "message": "Export"
+    "message": "匯出"
   },
   "export_error": {
-    "message": "Couldn't save the backup file."
+    "message": "無法儲存備份檔案。"
   },
   "import_groups": {
-    "message": "Import groups"
+    "message": "匯入分組"
   },
   "import_groups_desc": {
-    "message": "Restore groups from an Extentie or SimpleExtManager backup"
+    "message": "從 Extentie 或 SimpleExtManager 的備份檔案還原分組"
   },
   "choose_file": {
     "description": "button label",
-    "message": "Choose file"
+    "message": "選擇檔案"
   },
   "import_found": {
     "description": "$COUNT$ groups were read from the backup file $FILE$",
-    "message": "Found $COUNT$ groups in $FILE$",
+    "message": "在 $FILE$ 中找到 $COUNT$ 個分組",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -187,22 +194,22 @@
     }
   },
   "import_hint": {
-    "message": "Merge keeps your current groups, Replace removes them."
+    "message": "「合併」會保留現有分組，「取代」會刪除現有分組。"
   },
   "merge": {
     "description": "button label",
-    "message": "Merge"
+    "message": "合併"
   },
   "replace": {
     "description": "button label",
-    "message": "Replace"
+    "message": "取代"
   },
   "cancel": {
     "description": "button label",
-    "message": "Cancel"
+    "message": "取消"
   },
   "import_done": {
-    "message": "Imported $COUNT$ groups.",
+    "message": "已匯入 $COUNT$ 個分組。",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -211,37 +218,37 @@
     }
   },
   "import_empty": {
-    "message": "No groups found in this file."
+    "message": "這個檔案中沒有找到分組。"
   },
   "import_error": {
-    "message": "Couldn't read this file. Choose an Extentie or SimpleExtManager backup."
+    "message": "無法讀取這個檔案，請選擇 Extentie 或 SimpleExtManager 的備份檔案。"
   },
   "classic": {
     "description": "icon style name",
-    "message": "Classic"
+    "message": "經典"
   },
   "geometric": {
     "description": "icon style name",
-    "message": "Geometric"
+    "message": "幾何"
   },
   "modern": {
     "description": "icon style name",
-    "message": "Modern"
+    "message": "現代"
   },
   "options_theme_auto": {
     "description": "icon colour that follows the browser theme",
-    "message": "Auto"
+    "message": "自動"
   },
   "options_theme_light": {
-    "message": "Light"
+    "message": "淺色"
   },
   "options_theme_dark": {
-    "message": "Dark"
+    "message": "深色"
   },
   "options_theme_blue": {
-    "message": "Blue"
+    "message": "藍色"
   },
   "options_theme_yellow": {
-    "message": "Yellow"
+    "message": "黃色"
   }
 }

@@ -1,14 +1,10 @@
 {
-  "extName": {
+  "ext_name": {
     "message": "Extentie - 扩展程序管理器"
   },
 
-  "extDesc": {
+  "ext_desc": {
     "message": "漂亮而简单的扩展程序管理工具"
-  },
-
-  "extDefaultTitle": {
-    "message": "管理扩展"
   },
 
   "extensions": {
@@ -23,11 +19,11 @@
     "message": "主题"
   },
 
-  "gotoWebStore": {
+  "go_to_webstore": {
     "message": "前往 Chrome 网上应用店"
   },
 
-  "gotoExtension": {
+  "manage_extensions": {
     "message": "管理扩展"
   },
 
@@ -35,9 +31,224 @@
     "message": "卸载"
   },
 
+  "general": {
+    "message": "通用"
+  },
+
   "open_option": {
     "message": "设置"
+  },
+
+  "launch_app": {
+    "message": "启动应用"
+  },
+
+  "appearance": {
+    "message": "外观"
+  },
+  "popup_height": {
+    "message": "弹窗高度"
+  },
+  "layout": {
+    "message": "布局"
+  },
+  "icon_style": {
+    "message": "图标样式"
+  },
+  "icon_color": {
+    "message": "图标颜色"
+  },
+  "set_up_user_groups": {
+    "message": "设置你的分组"
+  },
+  "use_native_scroll_bar" : {
+    "message": "使用原生滚动条"
+  },
+  "show_user_groups_only": {
+    "message": "仅显示你设置的分组"
+  },
+  "show_search": {
+    "message": "显示搜索框"
+  },
+  "show_settings_button": {
+    "description": "toggles the button in the popup that opens these settings",
+    "message": "显示设置按钮"
+  },
+  "display_full_name": {
+    "message": "显示扩展的完整名称"
+  },
+  "enabled_ext_on_top": {
+    "message": "优先展示已启用的扩展"
+  },
+  "show_ext_desc_on_hover": {
+    "message": "鼠标悬停时显示扩展的描述"
+  },
+  "show_enable_all_button": {
+    "message": "显示开关组内所有扩展勾选框"
+  },
+  "highlight_side_load": {
+    "message": "高亮不是从 Chrome 网上应用店安装的扩展"
+  },
+  "default": {
+    "message": "默认"
+  },
+  "compact": {
+    "message": "紧凑"
+  },
+  "comfortable": {
+    "message": "宽松"
+  },
+  "no_results": {
+    "description": "empty list or empty search results",
+    "message": "无结果"
+  },
+
+  "all": {
+    "description": "tab name",
+    "message": "全部"
+  },
+
+  "groups": {
+    "description": "tab name",
+    "message": "分组"
+  },
+
+  "others": {
+    "description": "group name",
+    "message": "其他"
+  },
+  "new_group": {
+    "message": "新分组"
+  },
+  "ungrouped": {
+    "message": "未分组"
+  },
+  "customize_title": {
+    "description": "group customization page title",
+    "message": "设置分组 - Extentie"
+  },
+  "drop_here": {
+    "message": "拖至此处"
+  },
+  "delete_group": {
+    "description": "delete button label and confirmation dialog title on the group set up page",
+    "message": "删除分组"
+  },
+  "delete_group_confirm": {
+    "description": "$NAME$ is the name of the group about to be deleted",
+    "message": "确定删除「$NAME$」吗？组内的扩展不会被卸载。",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "工作"
+      }
+    }
+  },
+  "untitled_group": {
+    "description": "stands in for the name of a group that was left unnamed",
+    "message": "未命名分组"
+  },
+  "delete": {
+    "description": "button label",
+    "message": "删除"
+  },
+  "needs_permission_review": {
+    "description": "tooltip for an extension Chrome disabled because it wants more permissions",
+    "message": "需要更多权限，将打开 Chrome 扩展页面。"
+  },
+  "export_groups": {
+    "message": "导出分组"
+  },
+  "export_groups_desc": {
+    "message": "将你的分组保存为 JSON 文件"
+  },
+  "export": {
+    "description": "button label",
+    "message": "导出"
+  },
+  "export_error": {
+    "message": "无法保存备份文件。"
+  },
+  "import_groups": {
+    "message": "导入分组"
+  },
+  "import_groups_desc": {
+    "message": "从 Extentie 或 SimpleExtManager 的备份文件恢复分组"
+  },
+  "choose_file": {
+    "description": "button label",
+    "message": "选择文件"
+  },
+  "import_found": {
+    "description": "$COUNT$ groups were read from the backup file $FILE$",
+    "message": "在 $FILE$ 中找到 $COUNT$ 个分组",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      },
+      "file": {
+        "content": "$2",
+        "example": "extensionGroups.backup"
+      }
+    }
+  },
+  "import_hint": {
+    "message": "「合并」保留现有分组，「替换」会删除现有分组。"
+  },
+  "merge": {
+    "description": "button label",
+    "message": "合并"
+  },
+  "replace": {
+    "description": "button label",
+    "message": "替换"
+  },
+  "cancel": {
+    "description": "button label",
+    "message": "取消"
+  },
+  "import_done": {
+    "message": "已导入 $COUNT$ 个分组。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "import_empty": {
+    "message": "该文件中没有找到分组。"
+  },
+  "import_error": {
+    "message": "无法读取该文件，请选择 Extentie 或 SimpleExtManager 的备份文件。"
+  },
+  "classic": {
+    "description": "icon style name",
+    "message": "经典"
+  },
+  "geometric": {
+    "description": "icon style name",
+    "message": "几何"
+  },
+  "modern": {
+    "description": "icon style name",
+    "message": "现代"
+  },
+  "options_theme_auto": {
+    "description": "icon colour that follows the browser theme",
+    "message": "自动"
+  },
+  "options_theme_light": {
+    "message": "浅色"
+  },
+  "options_theme_dark": {
+    "message": "深色"
+  },
+  "options_theme_blue": {
+    "message": "蓝色"
+  },
+  "options_theme_yellow": {
+    "message": "黄色"
   }
-
-
 }

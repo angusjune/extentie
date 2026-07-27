@@ -1,0 +1,1 @@
+export const msg = chrome.i18n.getMessage;

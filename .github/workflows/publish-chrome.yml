@@ -1,0 +1,176 @@
+name: Publish Chrome extension
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+concurrency:
+  group: chrome-web-store-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: chrome-web-store
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Read and validate version
+        id: version
+        shell: bash
+        run: |
+          version="$(node -p "require('./manifest.json').version")"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "push" && "${GITHUB_REF_NAME}" != "v${version}" ]]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match manifest version v${version}"
+            exit 1
+          fi
+
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Package extension
+        id: package
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mkdir -p release
+          (
+            cd dist
+            zip -qr "../release/extentie-${VERSION}.zip" .
+          )
+
+          package_path="release/extentie-${VERSION}.zip"
+          packaged_version="$(unzip -p "${package_path}" manifest.json | jq -r .version)"
+
+          if [[ "${packaged_version}" != "${VERSION}" ]]; then
+            echo "::error::Packaged manifest version ${packaged_version} does not match ${VERSION}"
+            exit 1
+          fi
+
+          echo "path=${package_path}" >> "${GITHUB_OUTPUT}"
+
+      - name: Save release package
+        uses: actions/upload-artifact@v7
+        with:
+          name: extentie-${{ steps.version.outputs.version }}
+          path: ${{ steps.package.outputs.path }}
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+          create_credentials_file: false
+
+      - name: Upload package to Chrome Web Store
+        id: upload
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+        run: |
+          item="publishers/${CWS_PUBLISHER_ID}/items/${CWS_EXTENSION_ID}"
+          upload_url="https://chromewebstore.googleapis.com/upload/v2/${item}:upload"
+          status_url="https://chromewebstore.googleapis.com/v2/${item}:fetchStatus"
+
+          response="$(
+            curl --silent --show-error --fail-with-body \
+              --request POST \
+              --header "Authorization: Bearer ${ACCESS_TOKEN}" \
+              --header "Content-Type: application/zip" \
+              --upload-file "${PACKAGE_PATH}" \
+              "${upload_url}"
+          )"
+          state="$(jq -r '.uploadState // empty' <<< "${response}")"
+
+          for attempt in {1..30}; do
+            if [[ "${state}" == "SUCCEEDED" ]]; then
+              break
+            fi
+
+            if [[ "${state}" != "IN_PROGRESS" && "${state}" != "UPLOAD_IN_PROGRESS" ]]; then
+              echo "::error::Chrome Web Store upload failed with state: ${state:-unknown}"
+              jq . <<< "${response}"
+              exit 1
+            fi
+
+            sleep 5
+            response="$(
+              curl --silent --show-error --fail-with-body \
+                --header "Authorization: Bearer ${ACCESS_TOKEN}" \
+                "${status_url}"
+            )"
+            state="$(jq -r '.lastAsyncUploadState // empty' <<< "${response}")"
+          done
+
+          if [[ "${state}" != "SUCCEEDED" ]]; then
+            echo "::error::Chrome Web Store upload did not finish within 150 seconds"
+            exit 1
+          fi
+
+          echo "item=${item}" >> "${GITHUB_OUTPUT}"
+
+      - name: Submit for review and automatic publishing
+        id: publish
+        shell: bash
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          ITEM: ${{ steps.upload.outputs.item }}
+        run: |
+          response="$(
+            curl --silent --show-error --fail-with-body \
+              --request POST \
+              --header "Authorization: Bearer ${ACCESS_TOKEN}" \
+              --header "Content-Type: application/json" \
+              --data '{"publishType":"DEFAULT_PUBLISH"}' \
+              "https://chromewebstore.googleapis.com/v2/${ITEM}:publish"
+          )"
+
+          state="$(jq -r '.state // "unknown"' <<< "${response}")"
+          echo "state=${state}" >> "${GITHUB_OUTPUT}"
+          jq . <<< "${response}"
+
+      - name: Write release summary
+        env:
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+          PUBLISH_STATE: ${{ steps.publish.outputs.state }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          {
+            echo "## Chrome Web Store release"
+            echo
+            echo "- Version: \`${VERSION}\`"
+            echo "- Submission state: \`${PUBLISH_STATE}\`"
+            echo "- Extension: https://chromewebstore.google.com/detail/${CWS_EXTENSION_ID}"
+          } >> "${GITHUB_STEP_SUMMARY}"
