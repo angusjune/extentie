@@ -235,11 +235,11 @@ watch(currentTab, (val) => {
         <ExtInput v-model:value="searchTerm" />
     </div>
 
-    <main 
-        class="lists-container" 
-        :class="!options.useNativeScrollbar && 'lists-container--styled-scrollbar'" 
-        :id="`panel-${currentTab}`" 
-        :style="{...listLayoutProps}" 
+    <main
+        class="lists-container"
+        :class="!options.useNativeScrollbar && 'lists-container--styled-scrollbar'"
+        :id="`panel-${currentTab}`"
+        :style="{...listLayoutProps}"
         tabindex="0"
         @keydown.left.prevent="currentTab = currentTab === 0 ? 1 : 0"
         @keydown.right.prevent="currentTab = currentTab === 0 ? 1 : 0"
@@ -250,8 +250,8 @@ watch(currentTab, (val) => {
             <ExtGroup
                 v-if="extensions.length > 0"
                 :id="id"
-                :title="name" 
-                :description="extensions.filter((item: chrome.management.ExtensionInfo) => item?.enabled).length + ' / ' + extensions.length" 
+                :title="name"
+                :description="extensions.filter((item: chrome.management.ExtensionInfo) => item?.enabled).length + ' / ' + extensions.length"
                 :items="extensions"
                 :collapsed="collapsed.includes(id)"
                 :enabled="extensions.every((item: chrome.management.ExtensionInfo) => item?.enabled)"
@@ -309,7 +309,6 @@ watch(currentTab, (val) => {
     overflow: auto;
     flex: 1;
     padding-bottom: var(--spacing-2);
-    margin-top: var(--spacing-2);
 
     &--styled-scrollbar {
         &::-webkit-scrollbar {

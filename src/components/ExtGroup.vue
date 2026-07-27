@@ -57,7 +57,7 @@ function focusPrev() {
 
 <template>
     <section class="group">
-        
+
         <header class="group__header" @click="toggle">
             <div class="group__leading-action" v-if="showEnableAll">
                 <ExtCheckbox v-model="_enabled" />
@@ -69,7 +69,7 @@ function focusPrev() {
                 </ExtIconButton>
             </div>
             <div class="group__description">{{description}}</div>
-            
+
         </header>
 
         <div class="group__content" v-show="!collapsed" :aria-expanded="collapsed ? 'false' : 'true'" role="list" @keydown.down.prevent="focusNext" @keydown.up.prevent="focusPrev">
@@ -88,6 +88,7 @@ function focusPrev() {
         display: flex;
         align-items: center;
         padding: var(--spacing-2) var(--horizontal-padding);
+        margin-top: var(--spacing-2);
         cursor: default;
         position: sticky;
         top: 0;
