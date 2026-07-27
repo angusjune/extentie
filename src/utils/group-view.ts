@@ -20,6 +20,21 @@ function comparator(order: GroupOrder) {
 }
 
 /**
+ * The order snapshot carried forward onto a fresh list of extensions.
+ *
+ * Rows already on screen hold the position they were given, so toggling one does not
+ * make the rest jump. An extension the snapshot has never seen — just installed, or
+ * the first list of all — takes its position from the state it arrives in.
+ */
+export function carryOrderForward(
+    previous: ReadonlyMap<string, boolean>,
+    extensions: Extension[],
+): ReadonlyMap<string, boolean> {
+    return new Map(extensions.map(extension =>
+        [extension.id, previous.get(extension.id) ?? extension.enabled]))
+}
+
+/**
  * Extensions grouped by the kind of thing they are, titled by `titleOf`.
  *
  * `order` takes a snapshot rather than reading `enabled` live on purpose: the rows

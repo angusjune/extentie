@@ -46,6 +46,13 @@ function mergeGroups(existing: UserGroupInfo[], imported: UserGroupInfo[]): User
             continue
         }
 
+        // A group that brought extensions which are all already grouped adds nothing,
+        // so it would land as an empty group the user never asked for. One that was
+        // empty in the file is still theirs to keep.
+        if (group.order.length > 0 && newExtensions.length === 0) {
+            continue
+        }
+
         const id = takenIds.has(group.id) ? uuid() : group.id
         takenIds.add(id)
         added.push({ ...group, id, order: newExtensions })

@@ -27,10 +27,6 @@
     "message": "管理扩展"
   },
 
-  "set_groups": {
-    "message": "设置分组"
-  },
-
   "delete_this": {
     "message": "卸载"
   },
@@ -200,5 +196,33 @@
   },
   "import_error": {
     "message": "无法读取该文件，请选择 Extentie 或 SimpleExtManager 的备份文件。"
+  },
+  "classic": {
+    "description": "icon style name",
+    "message": "经典"
+  },
+  "geometric": {
+    "description": "icon style name",
+    "message": "几何"
+  },
+  "modern": {
+    "description": "icon style name",
+    "message": "现代"
+  },
+  "options_theme_auto": {
+    "description": "icon colour that follows the browser theme",
+    "message": "自动"
+  },
+  "options_theme_light": {
+    "message": "浅色"
+  },
+  "options_theme_dark": {
+    "message": "深色"
+  },
+  "options_theme_blue": {
+    "message": "蓝色"
+  },
+  "options_theme_yellow": {
+    "message": "黄色"
   }
 }

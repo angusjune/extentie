@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watch, ref, shallowRef, reactive, computed } from 'vue'
 import { SystemGroupIds, type ExtensionGroups } from './ExtensionGroup'
-import { groupByType, groupByUserGroups, ungrouped, searchGroups } from '@/utils/group-view'
+import { groupByType, groupByUserGroups, ungrouped, searchGroups, carryOrderForward } from '@/utils/group-view'
 import { sanitizeGroupIds } from '@/utils/group-id'
 import { parseCollapsedGroups, serializeCollapsedGroups } from '@/utils/collapsed-groups'
 import ExtInput from '@/components/ExtTextField.vue'
@@ -28,13 +28,13 @@ const extensions = ref<Extension[]>([])
 const options = reactive(<ExtentieOptions>{})
 const userGroupSetup = ref<UserGroupInfo[]>([])
 
-// Row order settles when the list arrives and stays put while the user toggles, so a
-// row never slides out from under the cursor mid-click.
-const enabledOnLoad = shallowRef<ReadonlyMap<string, boolean>>(new Map())
+// Row order settles when a row first appears and stays put while the user toggles, so
+// a row never slides out from under the cursor mid-click.
+const rowOrder = shallowRef<ReadonlyMap<string, boolean>>(new Map())
 
 function setExtensions(list: Extension[]) {
     extensions.value = list
-    enabledOnLoad.value = new Map(list.map(extension => [extension.id, extension.enabled]))
+    rowOrder.value = carryOrderForward(rowOrder.value, list)
 }
 
 const currentTab = ref(0)
@@ -114,7 +114,7 @@ const listLayoutProps = computed(() => {
 // Derived rather than rebuilt by hand, so uninstalling the last member of a group
 // takes the group with it instead of leaving the old one behind.
 const defaultExtensionGroups = computed<ExtensionGroups>(
-    () => groupByType(extensions.value, titleOf, options.enabledExtensionsOnTop ? enabledOnLoad.value : 'name'))
+    () => groupByType(extensions.value, titleOf, options.enabledExtensionsOnTop ? rowOrder.value : 'name'))
 
 const userExtensionGroups = computed<ExtensionGroups>(
     () => groupByUserGroups(extensions.value, userGroupSetup.value))

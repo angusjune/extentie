@@ -88,4 +88,13 @@ describe('applyImportedGroups, merge', () => {
 
         assert.deepEqual(result, [{ id: 'work', name: 'Work', order: ['x', 'y'] }])
     })
+
+    test('still adds a group that was empty in the backup', () => {
+        const result = applyImportedGroups(
+            [{ id: 'work', name: 'Work', order: ['x'] }],
+            [{ id: 'imp', name: 'Empty', order: [] }],
+            'merge')
+
+        assert.deepEqual(ids(result), ['work', 'imp'])
+    })
 })

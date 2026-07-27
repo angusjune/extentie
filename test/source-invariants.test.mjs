@@ -52,12 +52,17 @@ describe('popup templates', () => {
 
     test('the delete key only uninstalls where the delete button is shown', async () => {
         const source = await read('src/components/ExtList.vue')
-        const binding = source.match(/@keydown\.delete[.\w]*="([^"]+)"/)
 
-        // Vue maps .delete to both Delete and Backspace, and Customize rows are
-        // focusable with showActions=false.
+        // Vue maps .delete to both Delete and Backspace, and the set up page renders
+        // focusable rows with showActions=false. The guard may sit on the binding or
+        // inside the handler; what matters is that one of them consults showActions.
+        const binding = source.match(/@keydown\.delete[.\w]*="([^"]+)"/)
         assert.ok(binding, 'no delete binding found')
-        assert.notEqual(binding[1], 'onDelete', 'Backspace uninstalls even when actions are hidden')
+
+        const handler = source.slice(source.indexOf('function onDelete'), source.indexOf('function onOpenOptions'))
+        const guarded = binding[1].includes('showActions') || /props\.showActions/.test(handler)
+
+        assert.ok(guarded, 'Backspace uninstalls even when actions are hidden')
     })
 
     test('rows inside a group get a defined v-for key', async () => {

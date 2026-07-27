@@ -27,10 +27,6 @@
     "message": "管理擴充功能"
   },
 
-  "set_groups": {
-    "message": "設定分組"
-  },
-
   "general": {
     "message": "一般"
   },
@@ -200,5 +196,33 @@
   },
   "import_error": {
     "message": "無法讀取這個檔案，請選擇 Extentie 或 SimpleExtManager 的備份檔案。"
+  },
+  "classic": {
+    "description": "icon style name",
+    "message": "經典"
+  },
+  "geometric": {
+    "description": "icon style name",
+    "message": "幾何"
+  },
+  "modern": {
+    "description": "icon style name",
+    "message": "現代"
+  },
+  "options_theme_auto": {
+    "description": "icon colour that follows the browser theme",
+    "message": "自動"
+  },
+  "options_theme_light": {
+    "message": "淺色"
+  },
+  "options_theme_dark": {
+    "message": "深色"
+  },
+  "options_theme_blue": {
+    "message": "藍色"
+  },
+  "options_theme_yellow": {
+    "message": "黃色"
   }
 }

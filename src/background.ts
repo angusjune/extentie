@@ -101,11 +101,9 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
             setEnabled(data.id, data.enabled).then(sendResponse);
             return true;
         case "UNINSTALL":
-            chrome.management.uninstall(data.id, { showConfirmDialog: true }).then(() => {
-                getExtensions().then(res => {
-                    chrome.runtime.sendMessage(<Message>{ type: "EXT_CHANGED", data: res });
-                })
-            });
+            // The open pages hear about the result through chrome.management.onUninstalled.
+            chrome.management.uninstall(data.id, { showConfirmDialog: true })
+                .catch(error => console.error(`Failed to uninstall extension ${data.id}:`, error));
             break;
         case "SET_COLOR_SCHEME":
             chrome.storage.local.set({ colorScheme: data.colorScheme });
@@ -114,6 +112,28 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
             break;
     }
 });
+
+/**
+ * Tells the open pages the installed extensions have changed.
+ *
+ * Nothing is listening when no page is open, which rejects — the popup in
+ * particular is already gone by the time an uninstall it started completes,
+ * because Chrome's confirmation dialog takes the focus that was keeping it up.
+ */
+async function broadcastExtensions() {
+    try {
+        await chrome.runtime.sendMessage(<Message>{ type: "EXT_CHANGED", data: await getExtensions() });
+    } catch {
+        // No page open to hear it.
+    }
+}
+
+// Without these an open set up page never learns about an extension installed,
+// removed, enabled or disabled anywhere other than through Extentie.
+chrome.management.onInstalled.addListener(broadcastExtensions);
+chrome.management.onUninstalled.addListener(broadcastExtensions);
+chrome.management.onEnabled.addListener(broadcastExtensions);
+chrome.management.onDisabled.addListener(broadcastExtensions);
 
 chrome.storage.onChanged.addListener(async (changes) => {
     if (!changes.options && !changes.colorScheme) return;

@@ -36,7 +36,7 @@ function focusPrev() {
 </script>
 
 <template>
-    <div class="tab-bar" role="tablist" @keydown.left.prevent="focusNext" @keydown.right.prevent="focusPrev">
+    <div class="tab-bar" role="tablist" @keydown.left.prevent="focusPrev" @keydown.right.prevent="focusNext">
         <button
             v-for="(tab, index) in tabs"
             :key="index"

@@ -31,7 +31,12 @@ const emit = defineEmits<{
   (e: 'update:enabled', value: typeof props.enabled): void
 }>()
 
+// Vue maps .delete to Backspace as well as Delete, and the set up page renders rows
+// that are focusable but deliberately offer no actions — uninstalling from there was
+// never on the menu.
 function onDelete() {
+    if (!props.showActions) return
+
     chrome.runtime.sendMessage({ type: 'UNINSTALL', data: { id: props.id } })
 }
 function onOpenOptions() {

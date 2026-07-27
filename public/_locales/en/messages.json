@@ -27,10 +27,6 @@
     "message": "Manage Extensions"
   },
 
-  "set_groups": {
-    "message": "Set Groups"
-  },
-
   "delete_this": {
     "message": "Uninstall"
   },
@@ -193,5 +189,33 @@
   },
   "import_error": {
     "message": "Couldn't read this file. Choose an Extentie or SimpleExtManager backup."
+  },
+  "classic": {
+    "description": "icon style name",
+    "message": "Classic"
+  },
+  "geometric": {
+    "description": "icon style name",
+    "message": "Geometric"
+  },
+  "modern": {
+    "description": "icon style name",
+    "message": "Modern"
+  },
+  "options_theme_auto": {
+    "description": "icon colour that follows the browser theme",
+    "message": "Auto"
+  },
+  "options_theme_light": {
+    "message": "Light"
+  },
+  "options_theme_dark": {
+    "message": "Dark"
+  },
+  "options_theme_blue": {
+    "message": "Blue"
+  },
+  "options_theme_yellow": {
+    "message": "Yellow"
   }
 }

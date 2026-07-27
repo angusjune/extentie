@@ -1,6 +1,8 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { groupByType, groupByUserGroups, ungrouped, searchGroups, searchExtensions } from '@/utils/group-view'
+import {
+    groupByType, groupByUserGroups, ungrouped, searchGroups, searchExtensions, carryOrderForward,
+} from '@/utils/group-view'
 
 const ext = (id, name, extra = {}) => ({ id, name, type: 'extension', enabled: true, ...extra })
 const names = group => group.extensions.map(extension => extension.name)
@@ -54,6 +56,34 @@ describe('groupByType', () => {
 
     test('returns nothing for no extensions', () => {
         assert.equal(groupByType([], titleOf).size, 0)
+    })
+})
+
+describe('carryOrderForward', () => {
+    test('takes the state it finds for a list it has not seen', () => {
+        const order = carryOrderForward(new Map(), [ext('a', 'A'), ext('b', 'B', { enabled: false })])
+
+        assert.deepEqual([...order], [['a', true], ['b', false]])
+    })
+
+    // Toggling one row must not move the others.
+    test('keeps the position of a row whose state has since changed', () => {
+        const before = new Map([['a', true]])
+        const order = carryOrderForward(before, [ext('a', 'A', { enabled: false })])
+
+        assert.equal(order.get('a'), true)
+    })
+
+    test('places a newly installed extension by its current state', () => {
+        const order = carryOrderForward(new Map([['a', true]]), [ext('a', 'A'), ext('new', 'New')])
+
+        assert.equal(order.get('new'), true)
+    })
+
+    test('forgets an extension that is gone', () => {
+        const order = carryOrderForward(new Map([['a', true], ['gone', false]]), [ext('a', 'A')])
+
+        assert.deepEqual([...order.keys()], ['a'])
     })
 })
 
