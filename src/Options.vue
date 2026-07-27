@@ -67,6 +67,7 @@ function setUserGroups(userGroups: UserGroupInfo[]) {
     <div class="container">
         <KrSection :title="msg('general')">
             <KrToggleRow :title="msg('show_search')" v-model="options.enabledSearch" />
+            <KrToggleRow :title="msg('show_settings_button')" v-model="options.showSettingsButton" />
             <KrToggleRow :title="msg('display_full_name')" v-model="options.displayFullName" />
             <KrToggleRow :title="msg('enabled_ext_on_top')" v-model="options.enabledExtensionsOnTop" />
             <KrToggleRow :title="msg('show_ext_desc_on_hover')" v-model="options.showExtensionDescriptionOnHover" />

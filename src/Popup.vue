@@ -9,6 +9,8 @@ import ExtList from '@/components/ExtList.vue'
 import ExtGroup from '@/components/ExtGroup.vue'
 import ExtTabBar from '@/components/ExtTabBar.vue'
 import ExtEmpty from '@/components/ExtEmpty.vue'
+import ExtIconButton from '@/components/ExtIconButton.vue'
+import Settings from '~icons/material-symbols/settings-rounded'
 import { msg } from '@/utils/i18n'
 
 type Extension = chrome.management.ExtensionInfo
@@ -157,11 +159,26 @@ const showEnableAll = computed(() => {
 watch(currentTab, (val) => {
     chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: {selectedTab: val} })
 })
+
+// The options page takes the focus the popup lives on, so the popup closes behind it.
+function openOptions() {
+    chrome.runtime.openOptionsPage()
+}
 </script>
 
 <template>
-    <div v-if="options.enabledSearch" class="search-container">
-        <ExtInput v-model:value="searchTerm" />
+    <div v-if="options.enabledSearch || options.showSettingsButton" class="search-container">
+        <ExtInput v-if="options.enabledSearch" class="search-container__field" v-model:value="searchTerm" />
+
+        <ExtIconButton
+            v-if="options.showSettingsButton"
+            class="search-container__settings"
+            :aria-label="msg('open_option')"
+            :title="msg('open_option')"
+            @click="openOptions"
+        >
+            <Settings />
+        </ExtIconButton>
     </div>
 
     <main
@@ -224,8 +241,29 @@ watch(currentTab, (val) => {
 
 .search-container {
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-2);
     width: 100%;
     padding: 16px var(--horizontal-padding) 8px;
+
+    /* The field gives up its width so the button keeps its own. */
+    &__field {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__settings {
+        flex: none;
+        color: var(--on-surface-secondary);
+        opacity: 0.5;
+        transition: opacity 0.15s ease;
+
+        &:hover, &:focus, &:focus-visible {
+            opacity: 0.8;
+        }
+    }
 }
 
 .lists-container {

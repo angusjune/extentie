@@ -66,6 +66,10 @@
   "show_search": {
     "message": "Show search bar"
   },
+  "show_settings_button": {
+    "description": "toggles the button in the popup that opens these settings",
+    "message": "Show settings button"
+  },
   "display_full_name": {
     "message": "Display extension full name"
   },

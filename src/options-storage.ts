@@ -8,6 +8,7 @@ type CustomOptions = ExtentieOptions & Options
 export const optionsStorage = new OptionsSync<CustomOptions>({
 	defaults: { 
 		enabledSearch: true,
+		showSettingsButton: true,
 		displayFullName: false,
 		enabledExtensionsOnTop: true,
 		showExtensionDescriptionOnHover: false,

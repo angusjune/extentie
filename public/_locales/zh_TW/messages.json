@@ -70,6 +70,10 @@
   "show_search": {
     "message": "顯示搜尋框"
   },
+  "show_settings_button": {
+    "description": "toggles the button in the popup that opens these settings",
+    "message": "顯示設定按鈕"
+  },
   "display_full_name": {
     "message": "顯示擴充功能的完整名稱"
   },

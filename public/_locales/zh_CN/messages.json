@@ -70,6 +70,10 @@
   "show_search": {
     "message": "显示搜索框"
   },
+  "show_settings_button": {
+    "description": "toggles the button in the popup that opens these settings",
+    "message": "显示设置按钮"
+  },
   "display_full_name": {
     "message": "显示扩展的完整名称"
   },

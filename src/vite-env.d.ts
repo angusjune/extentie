@@ -8,6 +8,7 @@ declare module '*.vue' {
 
 declare interface ExtentieOptions {
   enabledSearch: boolean;
+  showSettingsButton: boolean;
   displayFullName: boolean;
   enabledExtensionsOnTop: boolean;
   showExtensionDescriptionOnHover: boolean;
