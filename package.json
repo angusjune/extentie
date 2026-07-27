@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "npm run typecheck && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "node --test --import ./test/helpers/setup.mjs 'test/**/*.test.mjs'"
   },
   "type": "module",
   "devDependencies": {
