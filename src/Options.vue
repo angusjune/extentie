@@ -86,7 +86,7 @@ function setUserGroups(userGroups: UserGroupInfo[]) {
                 </template>
             </KrSelectGroup>
 
-            <KrSelectGroup :title="msg('icon_style')" :items="iconStyleOptions" v-model="options.iconStyle">
+            <KrSelectGroup :title="msg('icon_style')" :items="iconStyleOptions" v-model="options.iconStyle" :gap="20">
                 <template #items="{item, selected}">
                     <KrSelectItem :value="item.value" :label="item.label" :selected="selected">
                         <svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -96,7 +96,7 @@ function setUserGroups(userGroups: UserGroupInfo[]) {
                 </template>
             </KrSelectGroup>
 
-            <KrSelectGroup :title="msg('icon_color')" :items="iconColorOptions" v-model="options.iconColor">
+            <KrSelectGroup :title="msg('icon_color')" :items="iconColorOptions" v-model="options.iconColor" :gap="20">
                 <template #items="{item, selected}">
                     <KrSelectItem :value="item.value" :label="item.label" :selected="selected" circle>
                         <div class="color-option" :style="{background: item.color}"></div>

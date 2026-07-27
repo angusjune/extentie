@@ -7,10 +7,12 @@ const props = withDefaults(defineProps<{
     modelValue?: string,
     hideSeparator?: boolean,
     distribution?: 'flex-start' | 'flex-end' | 'space-between' | 'space-around',
+    gap?: number,
 }>(), {
     modelValue: undefined,
     hideSeparator: false,
-    distribution: 'flex-start'
+    distribution: 'flex-start',
+    gap: 8
 })
 
 const emit = defineEmits<{
@@ -30,7 +32,7 @@ function setSelected(value: typeof props.modelValue) {
             <div class="select-group__header__subtitle" v-if="subtitle">{{subtitle}}</div>
         </div>
 
-        <div class="select-group__items" :style="{justifyContent: distribution}">
+        <div class="select-group__items" :style="{justifyContent: distribution, gap: `${gap}px`}">
             <div v-for="item in items" :key="item.value" @click="setSelected(item.value)">
                 <slot name="items" :item="item" :selected="modelValue"></slot>
             </div>
@@ -69,7 +71,6 @@ function setSelected(value: typeof props.modelValue) {
         flex-wrap: wrap;
         justify-content: flex-start;
         align-items: center;
-        gap: 8px;
     }
 }
 </style>
