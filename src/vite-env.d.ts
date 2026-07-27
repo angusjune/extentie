@@ -53,8 +53,3 @@ declare enum MessageType {
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
 }
 
-declare type ExtensionGroup = import('./ExtensionGroup').ExtensionGroup;
-
-declare interface DefaultExtensionGroups {
-  [key: string]: ExtensionGroup
-}

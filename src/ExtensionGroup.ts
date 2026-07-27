@@ -1,40 +1,22 @@
-interface Group {
+/** The ids the popup gives the groups it builds itself. */
+export const SystemGroupIds = {
+    OTHERS: 'others',
+    EXTENSION: 'extension',
+    THEME: 'theme',
+    APP: 'app',
+} as const
+
+export type SystemGroupId = typeof SystemGroupIds[keyof typeof SystemGroupIds]
+
+/** A titled list of extensions, as one section of the popup. */
+export interface ExtensionGroup {
     id: string;
     name?: string;
-    extensions?: chrome.management.ExtensionInfo[] | [];
-}
-
-export enum SystemGroupIds {
-    OTHERS = 'others',
-    EXTENSION = 'extension',
-    THEME = 'theme',
-    APP = 'app',
+    extensions: chrome.management.ExtensionInfo[];
 }
 
 /**
- * An extension group.
+ * Groups keyed by id. A Map rather than an object because the keys are user data:
+ * an id read from a backup file must not be able to reach `Object.prototype`.
  */
-export class ExtensionGroup implements Group {
-    constructor(public id: string, public name: string | undefined = 'New Group', public extensions: chrome.management.ExtensionInfo[] | [] = []) {
-        this.id = id;
-        this.name = name;
-        this.extensions = extensions;
-    };
-
-    get() {
-        return {
-            id: this.id,
-            name: this.name,
-            extensions: this.extensions,
-        }
-    }
-
-    addToExtensions(extension: chrome.management.ExtensionInfo) {
-        if (!this.extensions) {
-            this.extensions = [];
-        }
-        this.extensions.push(extension as never);
-        
-        return this
-    }
-}
+export type ExtensionGroups = Map<string, ExtensionGroup>

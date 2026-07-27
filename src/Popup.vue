@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { watch, ref, reactive, computed, toRaw } from 'vue'
-import { ExtensionGroup } from './ExtensionGroup'
+import { watch, ref, shallowRef, reactive, computed } from 'vue'
+import { SystemGroupIds, type ExtensionGroups } from './ExtensionGroup'
+import { groupByType, groupByUserGroups, ungrouped, searchGroups } from '@/utils/group-view'
+import { sanitizeGroupIds } from '@/utils/group-id'
+import { parseCollapsedGroups, serializeCollapsedGroups } from '@/utils/collapsed-groups'
 import ExtInput from '@/components/ExtTextField.vue'
 import ExtList from '@/components/ExtList.vue'
 import ExtGroup from '@/components/ExtGroup.vue'
@@ -8,11 +11,9 @@ import ExtTabBar from '@/components/ExtTabBar.vue'
 import ExtEmpty from '@/components/ExtEmpty.vue'
 import { msg } from '@/utils/i18n'
 
-interface groupTitleMap {
-    [key: chrome.management.ExtensionInfo['type']]: string
-}
+type Extension = chrome.management.ExtensionInfo
 
-const groupTitles: groupTitleMap = {
+const groupTitles: Partial<Record<Extension['type'], string>> = {
     'extension': msg('extensions'),
     'login_screen_extension': msg('extensions'),
     'packaged_app': msg('applications'),
@@ -21,31 +22,35 @@ const groupTitles: groupTitleMap = {
     'theme': msg('themes'),
 }
 
-const extensions: chrome.management.ExtensionInfo[] = reactive([])
-const options = reactive(<ExtentieOptions>{})
-const userGroupSetup: UserGroupInfo[] = reactive([])
+const titleOf = (type: Extension['type']) => groupTitles[type] || type
 
-const defaultExtensionGroups = reactive(<DefaultExtensionGroups>{}) // extension groups grouped by type
-const userExtensionGroups = reactive(<DefaultExtensionGroups>{})
+const extensions = ref<Extension[]>([])
+const options = reactive(<ExtentieOptions>{})
+const userGroupSetup = ref<UserGroupInfo[]>([])
+
+// Row order settles when the list arrives and stays put while the user toggles, so a
+// row never slides out from under the cursor mid-click.
+const enabledOnLoad = shallowRef<ReadonlyMap<string, boolean>>(new Map())
+
+function setExtensions(list: Extension[]) {
+    extensions.value = list
+    enabledOnLoad.value = new Map(list.map(extension => [extension.id, extension.enabled]))
+}
 
 const currentTab = ref(0)
-const collapsed: chrome.management.ExtensionInfo['id'][] = reactive([])
+const collapsed = ref<string[]>([])
 const searchTerm = ref<string>('')
 
 const tabItems = [msg('all'), msg('groups')]
 
 const hasInit = ref(false)
 
-chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
-    console.log(res)
-    Object.assign(extensions, res.extensions)
-    Object.assign(userGroupSetup, res.userGroups.userGroups)
+chrome.runtime.sendMessage(<Message>{ type: "GET_ALL" }, (res: {extensions: Extension[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
+    setExtensions(res.extensions)
+    userGroupSetup.value = sanitizeGroupIds(res.userGroups.userGroups)
     Object.assign(options, res.options)
 
-    Object.assign(defaultExtensionGroups, getDefaultGroups())
-    Object.assign(userExtensionGroups, getUserGroups())
-
-    collapsed.push(...JSON.parse(res.options.collapsed))
+    collapsed.value = parseCollapsedGroups(res.options.collapsed)
     currentTab.value = res.options.selectedTab
 
     document.documentElement.style.height = res.options.popupHeight + 'px'
@@ -58,23 +63,21 @@ chrome.runtime.sendMessage({ type: "SET_COLOR_SCHEME", data: { colorScheme: isDa
 
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
     if (type === 'EXT_CHANGED') {
-        Object.assign(extensions, data)
-        Object.assign(defaultExtensionGroups, getDefaultGroups())
-        Object.assign(userExtensionGroups, getUserGroups())
+        setExtensions(data)
     }
 })
 
-function setEnabled(id: chrome.management.ExtensionInfo['id'], enabled: boolean) {
+function setEnabled(id: Extension['id'], enabled: boolean) {
     // The toggle has already flipped, so follow the state the background reports
     // back: a refused or failed change puts it right again.
     chrome.runtime.sendMessage({ type: "SET_ENABLED", data: { id, enabled } }).then((res: {id: string, enabled: boolean}) => {
-        const extension = extensions.find(ext => ext.id === id)
+        const extension = extensions.value.find(ext => ext.id === id)
         if (extension) extension.enabled = res.enabled
     })
 }
 
 function setGroupEnabled(id: string, enabled: boolean) {
-    const group = userGroupSetup.find(group => group.id === id)
+    const group = userGroupSetup.value.find(group => group.id === id)
     if (!group) return
 
     for (const ext of group.order) {
@@ -82,82 +85,12 @@ function setGroupEnabled(id: string, enabled: boolean) {
     }
 }
 
-function getDefaultGroups() {
-    //group extensions by type
-    let groups = <DefaultExtensionGroups>{}
-
-    for (const ext of extensions) {
-
-        const type = groupTitles[ext.type] || ext.type
-
-        if (!groups[type]) {
-            groups[type] = new ExtensionGroup(type, type)
-        }
-        groups[type].addToExtensions(ext)
-    }
-
-    //sort extensions by name
-    for (const type in groups) {
-        if (!groups[type].extensions) return
-
-        groups[type].extensions.sort((a, b) => {
-            return a.name.localeCompare(b.name)
-        })
-    }
-
-    // sort extensions by enabled
-    if (options.enabledExtensionsOnTop) {
-        for (const type in groups) {
-            groups[type].extensions.sort((a, b) => {
-                if (a.enabled && !b.enabled) return -1
-                if (!a.enabled && b.enabled) return 1
-                return 0
-            })
-        }
-    }
-    return groups
-}
-
-function getUserGroups() {
-    let groups = <DefaultExtensionGroups>{}
-
-    for (const {id, name, order} of userGroupSetup) {
-        if (!groups[id]) {
-            groups[id] = new ExtensionGroup(id, name)
-        }
-
-        groups[id].name = name || ''
-        /** @ts-ignore */
-        groups[id].extensions = order.filter(extId => extensions.findIndex(ext => ext.id === extId) > -1).map(extId => extensions.find(ext => ext.id === extId))
-    }
-
-    return groups
-}
-
 function groupToggleCollapsed(id: string) {
-    if (collapsed.includes(id)) {
-        collapsed.splice(collapsed.indexOf(id), 1)
-    } else {
-        collapsed.push(id)
-    }
-    chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: { collapsed: JSON.stringify(toRaw(collapsed)) } })
-}
+    collapsed.value = collapsed.value.includes(id)
+        ? collapsed.value.filter(collapsedId => collapsedId !== id)
+        : [...collapsed.value, id]
 
-function getSearchResults(searchTerm: string, searchIn: DefaultExtensionGroups): DefaultExtensionGroups {
-    let found = <DefaultExtensionGroups>{}
-    for (const [id, {extensions, name}] of Object.entries(searchIn)) {
-        const filtered = extensions.filter(ext => ext?.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        if (filtered.length > 0) {
-            filtered.sort((a, b) => {
-                // if a starts with searchTerm, it should be first
-                if (a.name.toLowerCase().startsWith(searchTerm.toLowerCase())) return -1
-                if (b.name.toLowerCase().startsWith(searchTerm.toLowerCase())) return 1
-                return 0
-            })
-            found[id] = new ExtensionGroup(id, name, filtered)
-        }
-    }
-    return found
+    chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: { collapsed: serializeCollapsedGroups(collapsed.value) } })
 }
 
 const listLayoutProps = computed(() => {
@@ -178,42 +111,27 @@ const listLayoutProps = computed(() => {
     return {'--list-spacing-base': spacingBase + 'px', '--list-font-size': fontSize + 'px', '--list-icon-size': iconSize + 'px'}
 })
 
-const notGroupedByUser = computed<ExtensionGroup>(() => {
-    let lists = extensions
+// Derived rather than rebuilt by hand, so uninstalling the last member of a group
+// takes the group with it instead of leaving the old one behind.
+const defaultExtensionGroups = computed<ExtensionGroups>(
+    () => groupByType(extensions.value, titleOf, options.enabledExtensionsOnTop ? enabledOnLoad.value : 'name'))
 
-    const array = lists.filter(ext => {
-        return !userGroupSetup.some(group => {
-            return group.order.some(id => id === ext.id)
-        })
-    })
+const userExtensionGroups = computed<ExtensionGroups>(
+    () => groupByUserGroups(extensions.value, userGroupSetup.value))
 
-    array.sort((a, b) => {
-        return a.name.localeCompare(b.name)
-    })
+const notGroupedByUser = computed(
+    () => ungrouped(extensions.value, userGroupSetup.value, msg('others')))
 
-    return new ExtensionGroup('others', msg('others'), array)
-})
+const shownGroups = computed<ExtensionGroups>(() => {
+    const showingUserGroups = currentTab.value === 1 || options.showUserGroupsOnly
 
-const shownGroups = computed<DefaultExtensionGroups>(() => {
-    const { showUserGroupsOnly } = options
+    let groups = showingUserGroups ? userExtensionGroups.value : defaultExtensionGroups.value
 
-    if (currentTab.value === 1 || showUserGroupsOnly) {
-
-        if (showUserGroupsOnly) {
-            // add a 'Other' group
-            Object.assign(userExtensionGroups, { 'others': notGroupedByUser })
-        }
-
-        if (searchTerm.value) {
-            return getSearchResults(searchTerm.value, userExtensionGroups)
-        }
-        return userExtensionGroups
-    } else {
-        if (searchTerm.value) {
-            return getSearchResults(searchTerm.value, defaultExtensionGroups)
-        }
-        return defaultExtensionGroups
+    if (options.showUserGroupsOnly) {
+        groups = new Map(groups).set(SystemGroupIds.OTHERS, notGroupedByUser.value)
     }
+
+    return searchTerm.value ? searchGroups(searchTerm.value, groups) : groups
 })
 
 const transitionName = computed(()=> {
@@ -248,22 +166,22 @@ watch(currentTab, (val) => {
         @keydown.right.prevent="currentTab = currentTab === 0 ? 1 : 0"
     >
 
-        <TransitionGroup :name="transitionName" v-if="Object.entries(shownGroups).length > 0">
-        <template v-for="([id, {extensions, name}], i) in Object.entries(shownGroups)" :key="id">
+        <TransitionGroup :name="transitionName" v-if="shownGroups.size > 0">
+        <template v-for="[id, group] in shownGroups" :key="id">
             <ExtGroup
-                v-if="extensions.length > 0"
+                v-if="group.extensions.length > 0"
                 :id="id"
-                :title="name"
-                :description="extensions.filter((item: chrome.management.ExtensionInfo) => item?.enabled).length + ' / ' + extensions.length"
-                :items="extensions"
+                :title="group.name"
+                :description="group.extensions.filter((item: Extension) => item.enabled).length + ' / ' + group.extensions.length"
+                :items="group.extensions"
                 :collapsed="collapsed.includes(id)"
-                :enabled="extensions.every((item: chrome.management.ExtensionInfo) => item?.enabled)"
+                :enabled="group.extensions.every((item: Extension) => item.enabled)"
                 @update:collapsed="groupToggleCollapsed(id)"
                 @update:enabled="setGroupEnabled(id, $event)"
                 :showEnableAll="showEnableAll"
             >
 
-                <template #item="{item}: {item: chrome.management.ExtensionInfo}">
+                <template #item="{item}: {item: Extension}">
                     <ExtList
                         v-model:enabled="item.enabled"
                         :id="item.id"

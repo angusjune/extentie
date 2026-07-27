@@ -1,4 +1,4 @@
-import { uuid } from '@/utils/uuid'
+import { toGroupId } from '@/utils/group-id'
 import { msg } from '@/utils/i18n'
 
 /** Extentie's own backup format. */
@@ -15,8 +15,6 @@ export interface GroupBackup {
 }
 
 const MAX_NAME_LENGTH = 40
-// Group ids end up as DOM ids on the set up page, so only accept plain ones.
-const SAFE_ID = /^[A-Za-z0-9_-]+$/
 const SIMPLE_EXT_MANAGER_KEY_PREFIX = /^GRP-/
 
 /**
@@ -119,10 +117,6 @@ function toUserGroup(raw: unknown, fallbackName = ''): UserGroupInfo {
         name: toGroupName(name ?? fallbackName),
         order: toExtensionIds(order ?? items),
     }
-}
-
-function toGroupId(id: unknown): string {
-    return typeof id === 'string' && SAFE_ID.test(id) ? id : uuid()
 }
 
 function toGroupName(name: unknown): string {
