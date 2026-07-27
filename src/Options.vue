@@ -75,6 +75,12 @@ function setUserGroups(userGroups: UserGroupInfo[]) {
             <KrToggleRow :title="msg('highlight_side_load')" v-model="options.highlightSideLoadExtensions" hide-separator />
         </KrSection>
 
+        <KrSection :title="msg('groups')">
+            <KrLinkRow :title="msg('set_up_user_groups')" :link="customizeUrl" />
+            <KrToggleRow v-if="userGroupSetup.length > 0" :title="msg('show_user_groups_only')" v-model="options.showUserGroupsOnly" />
+            <ExtGroupBackup :groups="userGroupSetup" :extensions="extensions" @import="setUserGroups" />
+        </KrSection>
+
         <KrSection :title="msg('appearance')">
 
             <KrSliderRow :title="msg('popup_height')" v-model="options.popupHeight" :min="300" :max="600" :step="10" />
@@ -109,11 +115,6 @@ function setUserGroups(userGroups: UserGroupInfo[]) {
 
         </KrSection>
 
-        <KrSection :title="msg('groups')">
-            <KrLinkRow :title="msg('set_up_user_groups')" :link="customizeUrl" />
-            <KrToggleRow v-if="userGroupSetup.length > 0" :title="msg('show_user_groups_only')" v-model="options.showUserGroupsOnly" />
-            <ExtGroupBackup :groups="userGroupSetup" :extensions="extensions" @import="setUserGroups" />
-        </KrSection>
     </div>
 </template>
 
