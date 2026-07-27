@@ -18,7 +18,6 @@
     "types": [
       "unplugin-icons/types/vue",
       "chrome",
-      "uuid",
       "offscreencanvas",
       "node"
     ]
