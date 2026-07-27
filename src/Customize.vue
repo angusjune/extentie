@@ -5,6 +5,8 @@ import { Sortable } from "sortablejs-vue3"
 import ExtTextField from "@/components/ExtTextField.vue"
 import ExtList from "@/components/ExtList.vue"
 import ExtIconButton from "@/components/ExtIconButton.vue"
+import KrButton from "@/components/KrButton.vue"
+import KrDialog from "@/components/KrDialog.vue"
 import Add from '~icons/material-symbols/add-rounded'
 import Delete from '~icons/material-symbols/delete-rounded'
 import DragHandle from '~icons/material-symbols/drag-indicator'
@@ -75,10 +77,31 @@ function setGroupExtensions(sortable: typeof Sortable) {
     saveGroups()
 }
 
+// Deleting a group throws away an arrangement that took some work to build, and the
+// only way back is to make it again, so the delete button asks first.
+const pendingDelete = ref<UserGroupInfo>()
+
+function requestRemoveGroup(group: UserGroupInfo) {
+    pendingDelete.value = group
+}
+
+function cancelRemoveGroup() {
+    pendingDelete.value = undefined
+}
+
+function confirmRemoveGroup() {
+    if (!pendingDelete.value) return
+
+    removeGroup(pendingDelete.value.id)
+    pendingDelete.value = undefined
+}
+
 function removeGroup(id: string) {
     groups.value = groups.value.filter(group => group.id !== id)
     saveGroups()
 }
+
+const pendingDeleteName = computed(() => pendingDelete.value?.name?.trim() || msg('untitled_group'))
 
 function sortUngrouped(sortable: typeof Sortable) {
     // place ungrouped extensions id in array
@@ -159,7 +182,7 @@ const ungroupedExtensions = computed(() => {
                         <DragHandle class="handle" />
                         <input class="card__title card__title--input" type="text" aria-label="group name" v-model="group.name" @input="saveGroups" maxlength="40" />
                         <div class="card__actions">
-                            <ExtIconButton @click="removeGroup(group.id)"><Delete /></ExtIconButton>
+                            <ExtIconButton @click="requestRemoveGroup(group)" :aria-label="msg('delete_group')"><Delete /></ExtIconButton>
                         </div>
                     </header>
                     <Sortable
@@ -198,6 +221,14 @@ const ungroupedExtensions = computed(() => {
             </div>
 
         </section>
+
+        <KrDialog :open="!!pendingDelete" :title="msg('delete_group')" @close="cancelRemoveGroup">
+            <div class="confirm">{{ msg('delete_group_confirm', [pendingDeleteName]) }}</div>
+            <template #actions>
+                <KrButton variant="plain" @click="cancelRemoveGroup">{{ msg('cancel') }}</KrButton>
+                <KrButton variant="primary" @click="confirmRemoveGroup">{{ msg('delete') }}</KrButton>
+            </template>
+        </KrDialog>
 
     </div>
     
@@ -311,6 +342,11 @@ const ungroupedExtensions = computed(() => {
             opacity: 0.8;
         }
     }
+}
+
+.confirm {
+    font-size: 14px;
+    color: var(--on-surface-primary);
 }
 
 .add-card {

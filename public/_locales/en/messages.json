@@ -119,6 +119,28 @@
   "drop_here": {
     "message": "Drop here"
   },
+  "delete_group": {
+    "description": "delete button label and confirmation dialog title on the group set up page",
+    "message": "Delete group"
+  },
+  "delete_group_confirm": {
+    "description": "$NAME$ is the name of the group about to be deleted",
+    "message": "Delete “$NAME$”? The extensions in it stay installed.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
+  "untitled_group": {
+    "description": "stands in for the name of a group that was left unnamed",
+    "message": "Untitled group"
+  },
+  "delete": {
+    "description": "button label",
+    "message": "Delete"
+  },
   "needs_permission_review": {
     "description": "tooltip for an extension Chrome disabled because it wants more permissions",
     "message": "Requires more permissions. Opens Chrome's extensions page."

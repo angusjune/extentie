@@ -126,6 +126,28 @@
   "drop_here": {
     "message": "拖至此处"
   },
+  "delete_group": {
+    "description": "delete button label and confirmation dialog title on the group set up page",
+    "message": "删除分组"
+  },
+  "delete_group_confirm": {
+    "description": "$NAME$ is the name of the group about to be deleted",
+    "message": "确定删除「$NAME$」吗？组内的扩展不会被卸载。",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "工作"
+      }
+    }
+  },
+  "untitled_group": {
+    "description": "stands in for the name of a group that was left unnamed",
+    "message": "未命名分组"
+  },
+  "delete": {
+    "description": "button label",
+    "message": "删除"
+  },
   "needs_permission_review": {
     "description": "tooltip for an extension Chrome disabled because it wants more permissions",
     "message": "需要更多权限，将打开 Chrome 扩展页面。"
