@@ -29,7 +29,7 @@
   "dependencies": {
     "sortablejs": "^1.15.0",
     "sortablejs-vue3": "^1.2.9",
-    "uuid": "^9.0.0",
+    "uuid": "^14.0.0",
     "vue": "^3.3.4",
     "webext-options-sync": "^4.0.0"
   }
