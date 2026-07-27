@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { groupByType, groupByUserGroups, ungrouped, searchGroups } from '@/utils/group-view'
+import { groupByType, groupByUserGroups, ungrouped, searchGroups, searchExtensions } from '@/utils/group-view'
 
 const ext = (id, name, extra = {}) => ({ id, name, type: 'extension', enabled: true, ...extra })
 const names = group => group.extensions.map(extension => extension.name)
@@ -110,6 +110,40 @@ describe('ungrouped', () => {
         const group = ungrouped(extensions, [{ id: 'g1', name: 'All', order: ['aaa', 'bbb', 'ccc'] }], 'Others')
 
         assert.deepEqual(names(group), [])
+    })
+})
+
+describe('searchExtensions', () => {
+    const extensions = [
+        ext('a', 'Adblock Plus', { shortName: 'abp' }),
+        ext('b', 'Bitwarden', { shortName: 'Bitwarden' }),
+        ext('c', 'Cookie Editor'),
+    ]
+
+    test('matches on name', () => {
+        assert.deepEqual(searchExtensions('cookie', extensions).map(e => e.id), ['c'])
+    })
+
+    test('matches on short name', () => {
+        assert.deepEqual(searchExtensions('abp', extensions).map(e => e.id), ['a'])
+    })
+
+    test('ignores case on both, including the term', () => {
+        assert.deepEqual(searchExtensions('ABP', extensions).map(e => e.id), ['a'])
+        assert.deepEqual(searchExtensions('bitWARDEN', extensions).map(e => e.id), ['b'])
+    })
+
+    // chrome.management omits shortName for some entries despite the type.
+    test('tolerates an extension with no short name', () => {
+        assert.deepEqual(searchExtensions('editor', extensions).map(e => e.id), ['c'])
+    })
+
+    test('returns everything for an empty term', () => {
+        assert.equal(searchExtensions('', extensions).length, 3)
+    })
+
+    test('returns nothing when nothing matches', () => {
+        assert.deepEqual(searchExtensions('zzz', extensions), [])
     })
 })
 

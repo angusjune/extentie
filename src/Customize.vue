@@ -1,7 +1,6 @@
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed, toRaw } from 'vue'
-import { v4 as uuid } from 'uuid'
+import { ref, computed, toRaw } from 'vue'
 import { Sortable } from "sortablejs-vue3"
 import ExtTextField from "@/components/ExtTextField.vue"
 import ExtList from "@/components/ExtList.vue"
@@ -10,21 +9,28 @@ import Add from '~icons/material-symbols/add-rounded'
 import Delete from '~icons/material-symbols/delete-rounded'
 import DragHandle from '~icons/material-symbols/drag-indicator'
 import { msg } from '@/utils/i18n'
+import { uuid } from '@/utils/uuid'
+import { sanitizeGroupIds } from '@/utils/group-id'
+import { searchExtensions, ungrouped, groupByUserGroups } from '@/utils/group-view'
+
+type Extension = chrome.management.ExtensionInfo
 
 // change page title
 document.title = msg('customize_title')
 
-const extensions = ref<chrome.management.ExtensionInfo[]>([])
-const userGroupSetup: UserGroupInfo[] = reactive([])
-const tempUserGroupSetup: UserGroupInfo[] = reactive([])
+const extensions = ref<Extension[]>([])
 const options = ref<ExtentieOptions>({} as ExtentieOptions)
 const searchTerm = ref<string>('')
 
-chrome.runtime.sendMessage({ type: "GET_ALL" }, (res: {extensions: chrome.management.ExtensionInfo[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
+// One list, both saved and rendered. Holding a second copy for the drag targets let
+// the two drift apart: a reorder only reached the saved one, while an edit to a name
+// reached both — through the object they still shared — and saved on every keystroke.
+const groups = ref<UserGroupInfo[]>([])
+
+chrome.runtime.sendMessage({ type: "GET_ALL" }, (res: {extensions: Extension[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
     extensions.value = res.extensions
     options.value = res.options
-    Object.assign(userGroupSetup, res.userGroups.userGroups)
-    Object.assign(tempUserGroupSetup, res.userGroups.userGroups)
+    groups.value = sanitizeGroupIds(res.userGroups.userGroups)
 })
 
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
@@ -36,59 +42,42 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
 const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 chrome.runtime.sendMessage({ type: "SET_COLOR_SCHEME", data: { colorScheme: isDarkMode ? 'dark' : 'light' } })
 
-function getExtInfoFromId(id: chrome.management.ExtensionInfo['id']) {
-    return extensions.value.find(ext => ext.id === id)
+/** Saved from each edit rather than from a watcher, so opening the page is not one. */
+function saveGroups() {
+    chrome.runtime.sendMessage({ type: "SET_USER_GROUPS", data: { userGroups: toRaw(groups.value) } })
+}
+
+// The ids a group holds, resolved to the extensions still installed. Sortable reads
+// the new order back off the rendered `data-id` attributes.
+const groupContents = computed(() => groupByUserGroups(extensions.value, groups.value))
+
+function extensionsIn(group: UserGroupInfo): Extension[] {
+    return groupContents.value.get(group.id)?.extensions ?? []
 }
 
 function createGroup() {
-    const newGroup: UserGroupInfo = {
-        id: uuid(),
-        name: msg('new_group'),
-        order: [],
-    }
-
-    userGroupSetup.push(newGroup)
-    tempUserGroupSetup.push(newGroup)
+    groups.value = [...groups.value, { id: uuid(), name: msg('new_group'), order: [] }]
+    saveGroups()
 }
 
 function setGroups(sortable: typeof Sortable) {
-    const order = sortable.toArray()
+    const order: string[] = sortable.toArray()
 
-    //sort usergroups by order
-    userGroupSetup.sort((a, b) => {
-        return order.indexOf(a.id) - order.indexOf(b.id)
-    })
+    groups.value = [...groups.value].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id))
+    saveGroups()
 }
 
 function setGroupExtensions(sortable: typeof Sortable) {
     const groupId: UserGroupInfo['id']  = sortable.el.id
     const order: UserGroupInfo['order'] = sortable.toArray()
-    
-    const newGroups: UserGroupInfo[] = userGroupSetup.map(group => {
-        if (group.id === groupId) {
-            return { ...group, order }
-        }
-        return group
-    })
-    Object.assign(userGroupSetup, newGroups)
-}
 
-function setGroupName(e: Event, groupId: string) {
-    const target = (<HTMLInputElement>e.target)
-    const name: UserGroupInfo['name'] = target.value
-
-    const newGroups: UserGroupInfo[] = userGroupSetup.map(group => {
-        if (group.id === groupId) {
-            return { ...group, name }
-        }
-        return group
-    })
-    Object.assign(userGroupSetup, newGroups)
+    groups.value = groups.value.map(group => (group.id === groupId ? { ...group, order } : group))
+    saveGroups()
 }
 
 function removeGroup(id: string) {
-    userGroupSetup.splice(userGroupSetup.findIndex(group => group.id === id), 1)
-    tempUserGroupSetup.splice(tempUserGroupSetup.findIndex(group => group.id === id), 1)
+    groups.value = groups.value.filter(group => group.id !== id)
+    saveGroups()
 }
 
 function sortUngrouped(sortable: typeof Sortable) {
@@ -99,29 +88,9 @@ function sortUngrouped(sortable: typeof Sortable) {
 }
 
 const ungroupedExtensions = computed(() => {
-    let lists = extensions.value
-    
-    if (searchTerm) {
-        lists = extensions.value.filter(ext => {
-            return (ext.name.toLowerCase().includes(searchTerm.value.toLowerCase()) || ext.shortName.toLowerCase().includes(searchTerm.value))
-        })
-    }
+    const matching = searchTerm.value ? searchExtensions(searchTerm.value, extensions.value) : extensions.value
 
-    const array = lists.filter(ext => {
-        return !tempUserGroupSetup.some(group => {
-            return group.order.some(id => id === ext.id)
-        })
-    })
-
-    array.sort((a, b) => {
-        return a.name.localeCompare(b.name)
-    })
-
-    return array
-})
-
-watch(userGroupSetup, val => {
-    chrome.runtime.sendMessage({ type: "SET_USER_GROUPS", data: { userGroups: toRaw(val) }})
+    return ungrouped(matching, groups.value, '').extensions
 })
 </script>
 
@@ -152,12 +121,13 @@ watch(userGroupSetup, val => {
                         },
                     }"
                 >
-                    <template #item="{element}: {element: chrome.management.ExtensionInfo}">
+                    <template #item="{element}: {element: Extension}">
                         <ExtList
                             v-bind="element"
                             :data-id="element.id"
-                            :title="element.name" 
+                            :title="element.name"
                             :showActions="false"
+                            :isApp="element.type.includes('app')"
                             :highlight="options.highlightSideLoadExtensions && (element.installType !== 'normal')"
                         />
                     </template>
@@ -168,7 +138,7 @@ watch(userGroupSetup, val => {
         <section class="section">
 
             <Sortable
-                :list="tempUserGroupSetup"
+                :list="groups"
                 item-key="id"
                 tag="div"
                 :options="{
@@ -187,7 +157,7 @@ watch(userGroupSetup, val => {
                 <div class="card" :data-id="group.id">
                     <header class="card__header">
                         <DragHandle class="handle" />
-                        <input class="card__title card__title--input" type="text" aria-label="group name" v-model="group.name" @change="setGroupName($event, group.id)" maxlength="40" />
+                        <input class="card__title card__title--input" type="text" aria-label="group name" v-model="group.name" @input="saveGroups" maxlength="40" />
                         <div class="card__actions">
                             <ExtIconButton @click="removeGroup(group.id)"><Delete /></ExtIconButton>
                         </div>
@@ -195,7 +165,7 @@ watch(userGroupSetup, val => {
                     <Sortable
                         :id="group.id"
                         class="group-card"
-                        :list="group.order"
+                        :list="extensionsIn(group)"
                         item-key="id"
                         tag="div"
                         :options="{
@@ -205,14 +175,14 @@ watch(userGroupSetup, val => {
                         }"
                         :data-empty-text="msg('drop_here')"
                     >
-                        <template #item="{element: id}">
+                        <template #item="{element}: {element: Extension}">
                             <ExtList
-                                v-if="getExtInfoFromId(id)"
-                                v-bind="getExtInfoFromId(id)"
-                                :data-id="id"
-                                :title="getExtInfoFromId(id)?.name ?? ''"
+                                v-bind="element"
+                                :data-id="element.id"
+                                :title="element.name"
                                 :showActions="false"
-                                :highlight="options.highlightSideLoadExtensions && (getExtInfoFromId(id)?.installType !== 'normal')"
+                                :isApp="element.type.includes('app')"
+                                :highlight="options.highlightSideLoadExtensions && (element.installType !== 'normal')"
                             />
                         </template>
                     </Sortable>

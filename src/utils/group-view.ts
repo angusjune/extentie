@@ -78,6 +78,17 @@ export function ungrouped(extensions: Extension[], userGroups: UserGroupInfo[], 
 }
 
 /**
+ * Extensions whose name or short name contains the term. `shortName` is optional in
+ * practice even though the type says otherwise, so it is treated as missing text.
+ */
+export function searchExtensions(term: string, extensions: Extension[]): Extension[] {
+    const needle = lower(term)
+
+    return extensions.filter(extension =>
+        lower(extension.name).includes(needle) || lower(extension.shortName ?? '').includes(needle))
+}
+
+/**
  * The groups holding an extension whose name matches, with the closest matches first.
  * A group with no match is left out entirely.
  */

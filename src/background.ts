@@ -1,9 +1,16 @@
 import { optionsStorage, userGroupsStorage } from './options-storage';
-import { getIconDictionary, iconColors } from './action-icon';
+import { getIconDictionary, resolveIconColor } from './action-icon';
+import { createQueuedWriter } from '@/utils/queued-writer';
 import { msg } from '@/utils/i18n';
 
-const optionsStored = {} as ExtentieOptions;
+let optionsStored: ExtentieOptions | undefined;
 const localStored   = {} as { colorScheme: ColorScheme };
+
+// Nothing awaits a save, so these keep the writes in order, fold together the
+// bursts a dragged slider or a typed-out name produce, and report a failure that
+// would otherwise be an unhandled rejection.
+const writeOptions    = createQueuedWriter(patch => optionsStorage.set(patch));
+const writeUserGroups = createQueuedWriter(patch => userGroupsStorage.set(patch));
 
 async function getAll() {
     const extensions: chrome.management.ExtensionInfo[] = await chrome.management.getAll();
@@ -51,31 +58,27 @@ async function setEnabled(id: string, enabled: boolean) {
 }
 
 function setIcon(name: ExtentieOptions['iconStyle'], iconColor: ExtentieOptions['iconColor'], colorScheme: ColorScheme) {
-    let color: iconColors;
-
-    if (iconColor === 'auto') {
-        color = colorScheme === 'dark' ? iconColors.LIGHT : iconColors.DARK;
-    } else {
-        const key = iconColor.toUpperCase().replace(/-/g, '_');
-        color = iconColors[key as keyof typeof iconColors];
-    }
-
-    const imageData = getIconDictionary(name, color);
+    const imageData = getIconDictionary(name, resolveIconColor(iconColor, colorScheme));
     chrome.action.setIcon({ imageData })
 }
 
-// get all options
-(async () => {
-    const options = await optionsStorage.getAll();
-    Object.assign(optionsStored, options);
-
-    chrome.storage.local.get('colorScheme', ({ colorScheme }) => {
-        Object.assign(localStored, { colorScheme });
-        // set icon
-        setIcon(options.iconStyle, options.iconColor, colorScheme);
-    });
-
+/**
+ * Loads what the toolbar icon is drawn from. A storage change can wake a cold
+ * worker, and the listener would then run before this has finished — so the icon
+ * is only ever drawn once there is something to draw it from.
+ */
+const loaded = (async () => {
+    optionsStored = await optionsStorage.getAll();
+    localStored.colorScheme = (await chrome.storage.local.get('colorScheme')).colorScheme;
 })();
+
+loaded.then(refreshIcon).catch(error => console.error('Failed to load options:', error));
+
+function refreshIcon() {
+    if (!optionsStored) return;
+
+    setIcon(optionsStored.iconStyle, optionsStored.iconColor, localStored.colorScheme);
+}
 
 chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendResponse) => {
     switch (type) {
@@ -89,10 +92,10 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
             getOptions().then(sendResponse);
             return true;
         case "SET_OPTIONS":
-            optionsStorage.set(data);
+            writeOptions.queue(data);
             break;
         case "SET_USER_GROUPS":
-            userGroupsStorage.set(data);
+            writeUserGroups.queue(data);
             break;
         case "SET_ENABLED":
             setEnabled(data.id, data.enabled).then(sendResponse);
@@ -112,17 +115,22 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
     }
 });
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
-    
+chrome.storage.onChanged.addListener(async (changes) => {
+    if (!changes.options && !changes.colorScheme) return;
+
+    // A change can arrive before the bootstrap read above has finished.
+    await loaded;
+
     if (changes.options) {
         /** @ts-ignore */
-        const newValues: ExtentieOptions = optionsStorage._decode(changes.options.newValue);
-        Object.assign(optionsStored, newValues);
-    } else if (changes.colorScheme) {
+        optionsStored = optionsStorage._decode(changes.options.newValue) as ExtentieOptions;
+    }
+
+    if (changes.colorScheme) {
         localStored.colorScheme = changes.colorScheme.newValue;
     }
 
-    setIcon(optionsStored.iconStyle, optionsStored.iconColor, localStored.colorScheme);
+    refreshIcon();
 });
 
 chrome.runtime.onInstalled.addListener(() => {

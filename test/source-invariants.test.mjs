@@ -33,13 +33,12 @@ describe('background worker', () => {
         }
     })
 
-    test('never renders the toolbar icon from options it has not loaded yet', async () => {
+    test('saves through the queued writer rather than writing directly', async () => {
         const source = await read('src/background.ts')
-        const listener = source.slice(source.indexOf('chrome.storage.onChanged'))
+        const handler = source.slice(source.indexOf('chrome.runtime.onMessage'), source.indexOf('chrome.storage.onChanged'))
 
-        // A storage change can wake a cold worker before the bootstrap read resolves.
-        assert.match(listener, /if\s*\(!?\s*optionsStored|Object\.keys\(optionsStored\)|isReady|await\s+ready/,
-            'setIcon runs unguarded on every storage change')
+        // A direct set() is an unsequenced read-modify-write that nothing awaits.
+        assert.doesNotMatch(handler, /\b(optionsStorage|userGroupsStorage)\.set\(/)
     })
 })
 
