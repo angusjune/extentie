@@ -97,18 +97,26 @@ const listLayoutProps = computed(() => {
     let spacingBase = 4
     let fontSize = 14
     let iconSize = 22
+    let checkboxSize = 18
 
     if (options.layout === 'compact') {
         spacingBase = 2
         fontSize = 12
         iconSize = 20
+        checkboxSize = 16
     } else if (options.layout === 'comfortable') {
         spacingBase = 5
         fontSize = 14
         iconSize = 24
+        checkboxSize = 20
     }
 
-    return {'--list-spacing-base': spacingBase + 'px', '--list-font-size': fontSize + 'px', '--list-icon-size': iconSize + 'px'}
+    return {
+        '--list-spacing-base': spacingBase + 'px',
+        '--list-font-size': fontSize + 'px',
+        '--list-icon-size': iconSize + 'px',
+        '--list-checkbox-size': checkboxSize + 'px',
+    }
 })
 
 // Derived rather than rebuilt by hand, so uninstalling the last member of a group

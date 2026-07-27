@@ -26,7 +26,9 @@ const emit = defineEmits<{
 
 <style scoped lang="postcss">
 .checkbox {
-    --checkbox-size: 18px;
+    /* The popup sets --list-checkbox-size from the layout option; the fallback keeps
+       the checkbox at its default size anywhere that knob is not set. */
+    --checkbox-size: var(--list-checkbox-size, 18px);
     --checkbox-stroke-color: var(--on-surface-secondary);
     --checkbox-checkmark-stroke-color: var(--on-theme-primary);
     --checkbox-checked-container: var(--theme);
