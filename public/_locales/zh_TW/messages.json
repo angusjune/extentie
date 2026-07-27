@@ -129,5 +129,72 @@
   },
   "drop_here": {
     "message": "拖至此處"
+  },
+  "export_groups": {
+    "message": "匯出分組"
+  },
+  "export_groups_desc": {
+    "message": "將你的分組儲存為 JSON 檔案"
+  },
+  "export": {
+    "description": "button label",
+    "message": "匯出"
+  },
+  "export_error": {
+    "message": "無法儲存備份檔案。"
+  },
+  "import_groups": {
+    "message": "匯入分組"
+  },
+  "import_groups_desc": {
+    "message": "從 Extentie 或 SimpleExtManager 的備份檔案還原分組"
+  },
+  "choose_file": {
+    "description": "button label",
+    "message": "選擇檔案"
+  },
+  "import_found": {
+    "description": "$COUNT$ groups were read from the backup file $FILE$",
+    "message": "在 $FILE$ 中找到 $COUNT$ 個分組",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      },
+      "file": {
+        "content": "$2",
+        "example": "extensionGroups.backup"
+      }
+    }
+  },
+  "import_hint": {
+    "message": "「合併」會保留現有分組，「取代」會刪除現有分組。"
+  },
+  "merge": {
+    "description": "button label",
+    "message": "合併"
+  },
+  "replace": {
+    "description": "button label",
+    "message": "取代"
+  },
+  "cancel": {
+    "description": "button label",
+    "message": "取消"
+  },
+  "import_done": {
+    "message": "已匯入 $COUNT$ 個分組。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "import_empty": {
+    "message": "這個檔案中沒有找到分組。"
+  },
+  "import_error": {
+    "message": "無法讀取這個檔案，請選擇 Extentie 或 SimpleExtManager 的備份檔案。"
   }
 }

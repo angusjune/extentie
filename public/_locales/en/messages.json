@@ -122,5 +122,72 @@
   },
   "drop_here": {
     "message": "Drop here"
+  },
+  "export_groups": {
+    "message": "Export groups"
+  },
+  "export_groups_desc": {
+    "message": "Save your groups to a JSON file"
+  },
+  "export": {
+    "description": "button label",
+    "message": "Export"
+  },
+  "export_error": {
+    "message": "Couldn't save the backup file."
+  },
+  "import_groups": {
+    "message": "Import groups"
+  },
+  "import_groups_desc": {
+    "message": "Restore groups from an Extentie or SimpleExtManager backup"
+  },
+  "choose_file": {
+    "description": "button label",
+    "message": "Choose file"
+  },
+  "import_found": {
+    "description": "$COUNT$ groups were read from the backup file $FILE$",
+    "message": "Found $COUNT$ groups in $FILE$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      },
+      "file": {
+        "content": "$2",
+        "example": "extensionGroups.backup"
+      }
+    }
+  },
+  "import_hint": {
+    "message": "Merge keeps your current groups, Replace removes them."
+  },
+  "merge": {
+    "description": "button label",
+    "message": "Merge"
+  },
+  "replace": {
+    "description": "button label",
+    "message": "Replace"
+  },
+  "cancel": {
+    "description": "button label",
+    "message": "Cancel"
+  },
+  "import_done": {
+    "message": "Imported $COUNT$ groups.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "import_empty": {
+    "message": "No groups found in this file."
+  },
+  "import_error": {
+    "message": "Couldn't read this file. Choose an Extentie or SimpleExtManager backup."
   }
 }

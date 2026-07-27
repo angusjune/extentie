@@ -6,6 +6,7 @@ import KrSliderRow from '@/components/KrSliderRow.vue'
 import KrSelectGroup from '@/components/KrSelectGroup.vue'
 import KrSelectItem from '@/components/KrSelectItem.vue'
 import KrSection from '@/components/KrSection.vue'
+import ExtGroupBackup from '@/components/ExtGroupBackup.vue'
 import { iconPaths, iconColors } from './action-icon'
 import { msg } from '@/utils/i18n'
 import ListComfortable from '@/assets/list-comfortable.svg'
@@ -41,17 +42,24 @@ const customizeUrl = chrome.runtime.getURL('customize.html')
 
 const options        = ref<ExtentieOptions>({} as ExtentieOptions)
 const userGroupSetup = ref<UserGroupInfo[]>([])
+const extensions     = ref<chrome.management.ExtensionInfo[]>([])
 
 onMounted(() => {
-    chrome.runtime.sendMessage({type: 'GET_ALL'}, (res: {options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
+    chrome.runtime.sendMessage({type: 'GET_ALL'}, (res: {extensions: chrome.management.ExtensionInfo[], options: ExtentieOptions, userGroups: OptionsUserGroups}) => {
         options.value = res.options
         userGroupSetup.value = res.userGroups.userGroups
+        extensions.value = res.extensions
     })
 })
 
 watch(options, (val: ExtentieOptions) => {
     chrome.runtime.sendMessage(<Message>{ type: "SET_OPTIONS", data: val })
 }, { deep: true })
+
+function setUserGroups(userGroups: UserGroupInfo[]) {
+    userGroupSetup.value = userGroups
+    chrome.runtime.sendMessage(<Message>{ type: "SET_USER_GROUPS", data: { userGroups } })
+}
 
 </script>
 
@@ -101,8 +109,9 @@ watch(options, (val: ExtentieOptions) => {
         </KrSection>
 
         <KrSection :title="msg('groups')">
-            <KrLinkRow :title="msg('set_up_user_groups')" :link="customizeUrl" :hide-separator="userGroupSetup.length < 1" />
-            <KrToggleRow v-if="userGroupSetup.length > 0" :title="msg('show_user_groups_only')" v-model="options.showUserGroupsOnly" hide-separator />
+            <KrLinkRow :title="msg('set_up_user_groups')" :link="customizeUrl" />
+            <KrToggleRow v-if="userGroupSetup.length > 0" :title="msg('show_user_groups_only')" v-model="options.showUserGroupsOnly" />
+            <ExtGroupBackup :groups="userGroupSetup" :extensions="extensions" @import="setUserGroups" />
         </KrSection>
     </div>
 </template>
