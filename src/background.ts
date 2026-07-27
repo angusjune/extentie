@@ -23,6 +23,33 @@ async function getOptions() {
     return options;
 }
 
+/**
+ * Enables or disables an extension, and reports back the state it ended up in.
+ *
+ * An extension that Chrome disabled because it wants more permissions can only
+ * be re-enabled through Chrome's own confirmation dialog. Asking for that dialog
+ * from here is not safe: the user gesture is lost on the way to the service
+ * worker, there is no window to own the dialog, and the popup that would own it
+ * closes as soon as the dialog takes focus — which crashes the browser. Send the
+ * user to Chrome's extensions page and let it run its own flow instead.
+ */
+async function setEnabled(id: string, enabled: boolean) {
+    const extension = await chrome.management.get(id);
+
+    if (enabled && extension.disabledReason === 'permissions_increase') {
+        chrome.tabs.create({ url: `chrome://extensions/?id=${id}` });
+        return { id, enabled: extension.enabled };
+    }
+
+    try {
+        await chrome.management.setEnabled(id, enabled);
+        return { id, enabled };
+    } catch (error) {
+        console.error(`Failed to ${enabled ? 'enable' : 'disable'} extension ${id}:`, error);
+        return { id, enabled: extension.enabled };
+    }
+}
+
 function setIcon(name: ExtentieOptions['iconStyle'], iconColor: ExtentieOptions['iconColor'], colorScheme: ColorScheme) {
     let color: iconColors;
 
@@ -68,10 +95,8 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
             userGroupsStorage.set(data);
             break;
         case "SET_ENABLED":
-            chrome.management.setEnabled(data.id, data.enabled, () => {
-                if (chrome.runtime.lastError) { console.error(chrome.runtime.lastError) }
-            });
-            break;
+            setEnabled(data.id, data.enabled).then(sendResponse);
+            return true;
         case "UNINSTALL":
             chrome.management.uninstall(data.id, { showConfirmDialog: true }).then(() => {
                 getExtensions().then(res => {

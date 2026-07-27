@@ -65,8 +65,11 @@ chrome.runtime.onMessage.addListener(({ type, data }: Message, sender, sendRespo
 })
 
 function setEnabled(id: chrome.management.ExtensionInfo['id'], enabled: boolean) {
-    chrome.runtime.sendMessage({ type: "SET_ENABLED", data: { id, enabled } }).then(() => {
-        extensions.find(ext => ext.id === id)!.enabled = enabled
+    // The toggle has already flipped, so follow the state the background reports
+    // back: a refused or failed change puts it right again.
+    chrome.runtime.sendMessage({ type: "SET_ENABLED", data: { id, enabled } }).then((res: {id: string, enabled: boolean}) => {
+        const extension = extensions.find(ext => ext.id === id)
+        if (extension) extension.enabled = res.enabled
     })
 }
 
@@ -267,6 +270,7 @@ watch(currentTab, (val) => {
                         :icons="item.icons"
                         :mayDisable="item.mayDisable"
                         :mayEnable="((item as any).mayEnable)"
+                        :disabledReason="item.disabledReason"
                         :optionsUrl="item.optionsUrl"
                         :title="options.displayFullName ? item.name : (item.shortName || item.name)"
                         :description="options.showExtensionDescriptionOnHover ? item.description : undefined"

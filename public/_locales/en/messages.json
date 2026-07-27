@@ -123,6 +123,10 @@
   "drop_here": {
     "message": "Drop here"
   },
+  "needs_permission_review": {
+    "description": "tooltip for an extension Chrome disabled because it wants more permissions",
+    "message": "Requires more permissions. Opens Chrome's extensions page."
+  },
   "export_groups": {
     "message": "Export groups"
   },

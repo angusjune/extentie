@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
     enabled: boolean,
     mayEnable?: boolean,
     mayDisable: boolean,
+    disabledReason?: string,
     optionsUrl: string,
     isApp: boolean,
     icons?: chrome.management.IconInfo[],
@@ -51,6 +52,12 @@ const _enabled = computed({
     get() { return props.enabled },
     set(value) { emit('update:enabled', value) },
 })
+
+// Chrome has to run its own confirmation for these, so the toggle opens its
+// extensions page rather than enabling the extension here.
+const needsPermissionReview = computed(() => !props.enabled && props.disabledReason === 'permissions_increase')
+
+const tooltip = computed(() => needsPermissionReview.value ? msg('needs_permission_review') : props.description)
 </script>
 
 <template>
@@ -59,8 +66,8 @@ const _enabled = computed({
         class="list" 
         :class="{'list--disabled': !_enabled && showActions, 'list--highlight': highlight}" 
         role="listitem" 
-        tabindex="0" 
-        :title="description" 
+        tabindex="0"
+        :title="tooltip"
         @keydown.enter="_enabled = !_enabled"
         @keydown.delete="onDelete"
     >

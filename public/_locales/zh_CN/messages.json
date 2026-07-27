@@ -130,6 +130,10 @@
   "drop_here": {
     "message": "拖至此处"
   },
+  "needs_permission_review": {
+    "description": "tooltip for an extension Chrome disabled because it wants more permissions",
+    "message": "需要更多权限，将打开 Chrome 扩展页面。"
+  },
   "export_groups": {
     "message": "导出分组"
   },
