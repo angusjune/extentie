@@ -78,6 +78,21 @@ describe('popup templates', () => {
                 `item-key="${literal}" over a string[] gives every row key: undefined`)
         }
     })
+
+    test('cross-list drops discard the DOM node Sortable moved', async () => {
+        const source = await read('src/Customize.vue')
+        const bindings = source.match(/@add="discardMovedDomElement"/g) ?? []
+        const handler = source.slice(
+            source.indexOf('function discardMovedDomElement'),
+            source.indexOf('// Deleting a group'),
+        )
+
+        // sortablejs-vue3 renders its list without synchronising it. Every receiving
+        // extension list must discard Sortable's moved node before Vue renders the
+        // same extension from the updated group state, or the row appears twice.
+        assert.equal(bindings.length, 2, 'not every extension drop target cleans up the moved node')
+        assert.match(handler, /queueMicrotask\(\(\) => item\.remove\(\)\)/)
+    })
 })
 
 describe('repository hygiene', () => {

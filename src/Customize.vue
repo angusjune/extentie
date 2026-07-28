@@ -77,6 +77,13 @@ function setGroupExtensions(sortable: typeof Sortable) {
     saveGroups()
 }
 
+function discardMovedDomElement({ item }: { item: HTMLElement }) {
+    // sortablejs-vue3 renders `list`, but deliberately does not keep it in sync.
+    // Sortable has already moved this node; after the store callbacks update groups,
+    // Vue renders the extension at its new position and would leave this node behind.
+    queueMicrotask(() => item.remove())
+}
+
 // Deleting a group throws away an arrangement that took some work to build, and the
 // only way back is to make it again, so the delete button asks first.
 const pendingDelete = ref<UserGroupInfo>()
@@ -143,6 +150,7 @@ const ungroupedExtensions = computed(() => {
                             set: sortUngrouped,
                         },
                     }"
+                    @add="discardMovedDomElement"
                 >
                     <template #item="{element}: {element: Extension}">
                         <ExtList
@@ -196,6 +204,7 @@ const ungroupedExtensions = computed(() => {
                             animation: 150,
                             store: { set: setGroupExtensions },
                         }"
+                        @add="discardMovedDomElement"
                         :data-empty-text="msg('drop_here')"
                     >
                         <template #item="{element}: {element: Extension}">
