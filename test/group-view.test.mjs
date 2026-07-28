@@ -2,6 +2,7 @@ import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import {
     groupByType, groupByUserGroups, ungrouped, searchGroups, searchExtensions, carryOrderForward,
+    withExtensions,
 } from '@/utils/group-view'
 
 const ext = (id, name, extra = {}) => ({ id, name, type: 'extension', enabled: true, ...extra })
@@ -124,6 +125,42 @@ describe('groupByUserGroups', () => {
             assert.equal({}.name, undefined, 'Object.prototype was polluted')
         })
     }
+})
+
+describe('withExtensions', () => {
+    const group = (id, extensions) => [id, { id, name: id, extensions }]
+
+    test('leaves out a group with nothing in it', () => {
+        const groups = withExtensions(new Map([
+            group('g1', [ext('aaa', 'Adblock')]),
+            group('g2', []),
+            group('g3', [ext('bbb', 'Bitwarden')]),
+        ]))
+
+        assert.deepEqual([...groups.keys()], ['g1', 'g3'])
+    })
+
+    test('keeps the order of the groups it kept', () => {
+        const groups = withExtensions(new Map([
+            group('g1', []),
+            group('g2', [ext('bbb', 'Bitwarden')]),
+            group('g3', [ext('aaa', 'Adblock')]),
+        ]))
+
+        assert.deepEqual([...groups.keys()], ['g2', 'g3'])
+    })
+
+    test('does not touch the groups it was given', () => {
+        const given = new Map([group('g1', []), group('g2', [ext('aaa', 'Adblock')])])
+
+        withExtensions(given)
+
+        assert.deepEqual([...given.keys()], ['g1', 'g2'])
+    })
+
+    test('returns nothing when every group is empty', () => {
+        assert.equal(withExtensions(new Map([group('g1', []), group('g2', [])])).size, 0)
+    })
 })
 
 describe('ungrouped', () => {

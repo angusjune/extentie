@@ -94,6 +94,19 @@ describe('popup templates', () => {
         assert.match(handler, /queueMicrotask\(\(\) => item\.remove\(\)\)/)
     })
 
+    test('the view leaves the Groups tab when the tab bar does', async () => {
+        const source = await read('src/Popup.vue')
+        const script = source.slice(0, source.indexOf('<template>'))
+        const definition = script.slice(script.indexOf('const showGroupsTab'), script.indexOf('const activeTab'))
+
+        // The tab bar is only rendered while a group has something in it, so a view that
+        // still followed the stored tab would leave the user on an empty page with no tab
+        // bar to leave by. Every view decision reads activeTab, which falls back to All.
+        assert.match(definition, /userGroupIdsWithExtensions/, 'the tab bar outlives the groups it switches to')
+        assert.match(source, /class="tab-bar-container" v-if="showGroupsTab"/)
+        assert.doesNotMatch(script, /currentTab\.value ===/, 'a view decision follows the stored tab, not activeTab')
+    })
+
     test('the collapse-all button follows its visibility option', async () => {
         const [popup, settings, storage] = await Promise.all([
             read('src/Popup.vue'),

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { watch, ref, shallowRef, reactive, computed } from 'vue'
 import { SystemGroupIds, type ExtensionGroups } from './ExtensionGroup'
-import { groupByType, groupByUserGroups, ungrouped, searchGroups, carryOrderForward } from '@/utils/group-view'
+import {
+    groupByType, groupByUserGroups, ungrouped, searchGroups, carryOrderForward, withExtensions,
+} from '@/utils/group-view'
 import { sanitizeGroupIds } from '@/utils/group-id'
 import {
     addCollapsedGroups,
@@ -133,13 +135,23 @@ const listLayoutProps = computed(() => {
 const defaultExtensionGroups = computed<ExtensionGroups>(
     () => groupByType(extensions.value, titleOf, options.enabledExtensionsOnTop ? rowOrder.value : 'name'))
 
+// A group with nothing in it has nothing to show, so the popup leaves it out.
 const userExtensionGroups = computed<ExtensionGroups>(
-    () => groupByUserGroups(extensions.value, userGroupSetup.value))
+    () => withExtensions(groupByUserGroups(extensions.value, userGroupSetup.value)))
 
-const userGroupIdsWithExtensions = computed(() =>
-    [...userExtensionGroups.value]
-        .filter(([, group]) => group.extensions.length > 0)
-        .map(([id]) => id))
+const userGroupIdsWithExtensions = computed(() => [...userExtensionGroups.value.keys()])
+
+// The Groups tab is only there while a group has something to show. When the last one
+// goes the tab bar goes with it, so the view falls back to All: following the stored
+// tab would leave the user on an empty page with no tab bar to leave by.
+const showGroupsTab = computed(() =>
+    userGroupIdsWithExtensions.value.length > 0 && !options.showUserGroupsOnly)
+
+const activeTab = computed(() => showGroupsTab.value ? currentTab.value : 0)
+
+function switchTab() {
+    if (showGroupsTab.value) currentTab.value = activeTab.value === 0 ? 1 : 0
+}
 
 const allGroupsCollapsed = computed(() =>
     userGroupIdsWithExtensions.value.length > 0
@@ -149,7 +161,7 @@ const toggleAllGroupsLabel = computed(() =>
     allGroupsCollapsed.value ? msg('expand_all_groups') : msg('collapse_all_groups'))
 
 const showGroupCollapseButton = computed(() =>
-    options.showGroupCollapseButton && currentTab.value === 1 && !options.showUserGroupsOnly)
+    options.showGroupCollapseButton && activeTab.value === 1 && !options.showUserGroupsOnly)
 
 function toggleAllGroupsCollapsed() {
     if (userGroupIdsWithExtensions.value.length === 0) return
@@ -164,24 +176,24 @@ const notGroupedByUser = computed(
     () => ungrouped(extensions.value, userGroupSetup.value, msg('others')))
 
 const shownGroups = computed<ExtensionGroups>(() => {
-    const showingUserGroups = currentTab.value === 1 || options.showUserGroupsOnly
+    const showingUserGroups = activeTab.value === 1 || options.showUserGroupsOnly
 
     let groups = showingUserGroups ? userExtensionGroups.value : defaultExtensionGroups.value
 
     if (options.showUserGroupsOnly) {
-        groups = new Map(groups).set(SystemGroupIds.OTHERS, notGroupedByUser.value)
+        groups = withExtensions(new Map(groups).set(SystemGroupIds.OTHERS, notGroupedByUser.value))
     }
 
     return searchTerm.value ? searchGroups(searchTerm.value, groups, showingUserGroups) : groups
 })
 
 const transitionName = computed(()=> {
-    return currentTab.value === 0 ? 'slide-left' : 'slide-right'
+    return activeTab.value === 0 ? 'slide-left' : 'slide-right'
 })
 
 const showEnableAll = computed(() => {
     if (options.showEnableAllButton) {
-        return currentTab.value === 1 || options.showUserGroupsOnly
+        return activeTab.value === 1 || options.showUserGroupsOnly
     } else {
         return false
     }
@@ -230,17 +242,17 @@ function openOptions() {
     <main
         class="lists-container"
         :class="!options.useNativeScrollbar && 'lists-container--styled-scrollbar'"
-        :id="`panel-${currentTab}`"
+        :id="`panel-${activeTab}`"
         :style="{...listLayoutProps}"
         tabindex="0"
-        @keydown.left.prevent="currentTab = currentTab === 0 ? 1 : 0"
-        @keydown.right.prevent="currentTab = currentTab === 0 ? 1 : 0"
+        @keydown.left.prevent="switchTab"
+        @keydown.right.prevent="switchTab"
     >
 
         <TransitionGroup :name="transitionName" v-if="shownGroups.size > 0">
-        <template v-for="[id, group] in shownGroups" :key="id">
             <ExtGroup
-                v-if="group.extensions.length > 0"
+                v-for="[id, group] in shownGroups"
+                :key="id"
                 :id="id"
                 :title="group.name"
                 :description="group.extensions.filter((item: Extension) => item.enabled).length + ' / ' + group.extensions.length"
@@ -270,7 +282,6 @@ function openOptions() {
                 </template>
 
             </ExtGroup>
-        </template>
         </TransitionGroup>
 
         <div class="lists-container__empty" v-else-if="hasInit">
@@ -278,7 +289,7 @@ function openOptions() {
         </div>
     </main>
 
-    <div class="tab-bar-container" v-if="userGroupSetup.length > 0 && !options.showUserGroupsOnly" role="presentation">
+    <div class="tab-bar-container" v-if="showGroupsTab" role="presentation">
         <ExtTabBar v-model="currentTab" :tabs="tabItems" />
     </div>
 </template>

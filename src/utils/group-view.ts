@@ -80,6 +80,17 @@ export function groupByUserGroups(extensions: Extension[], userGroups: UserGroup
 }
 
 /**
+ * The groups that hold something.
+ *
+ * A group the user set up but never filled — or whose extensions have all been
+ * uninstalled — stays in the set up page, where it can still be filled. The popup
+ * has nothing to show for it, so it leaves it out.
+ */
+export function withExtensions(groups: ExtensionGroups): ExtensionGroups {
+    return new Map([...groups].filter(([, group]) => group.extensions.length > 0))
+}
+
+/**
  * The extensions no user group claims.
  */
 export function ungrouped(extensions: Extension[], userGroups: UserGroupInfo[], name: string): ExtensionGroup {
