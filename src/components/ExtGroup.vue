@@ -87,8 +87,7 @@ function focusPrev() {
     &__header {
         display: flex;
         align-items: center;
-        padding: var(--spacing-2) var(--horizontal-padding);
-        margin-top: var(--spacing-2);
+        padding: var(--spacing-3) var(--horizontal-padding) var(--spacing-2);
         cursor: default;
         position: sticky;
         top: 0;
@@ -115,6 +114,7 @@ function focusPrev() {
         text-transform: capitalize;
         color: var(--on-surface-primary);
         margin: 0;
+        user-select: none;
     }
 
     &__description {

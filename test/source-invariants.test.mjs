@@ -93,6 +93,19 @@ describe('popup templates', () => {
         assert.equal(bindings.length, 2, 'not every extension drop target cleans up the moved node')
         assert.match(handler, /queueMicrotask\(\(\) => item\.remove\(\)\)/)
     })
+
+    test('the collapse-all button follows its visibility option', async () => {
+        const [popup, settings, storage] = await Promise.all([
+            read('src/Popup.vue'),
+            read('src/Options.vue'),
+            read('src/options-storage.ts'),
+        ])
+
+        assert.match(popup, /options\.showGroupCollapseButton/)
+        assert.match(popup, /v-if="showGroupCollapseButton"/)
+        assert.match(settings, /v-model="options\.showGroupCollapseButton"/)
+        assert.match(storage, /showGroupCollapseButton:\s*true/)
+    })
 })
 
 describe('repository hygiene', () => {

@@ -148,6 +148,9 @@ const allGroupsCollapsed = computed(() =>
 const toggleAllGroupsLabel = computed(() =>
     allGroupsCollapsed.value ? msg('expand_all_groups') : msg('collapse_all_groups'))
 
+const showGroupCollapseButton = computed(() =>
+    options.showGroupCollapseButton && currentTab.value === 1 && !options.showUserGroupsOnly)
+
 function toggleAllGroupsCollapsed() {
     if (userGroupIdsWithExtensions.value.length === 0) return
 
@@ -169,7 +172,7 @@ const shownGroups = computed<ExtensionGroups>(() => {
         groups = new Map(groups).set(SystemGroupIds.OTHERS, notGroupedByUser.value)
     }
 
-    return searchTerm.value ? searchGroups(searchTerm.value, groups) : groups
+    return searchTerm.value ? searchGroups(searchTerm.value, groups, showingUserGroups) : groups
 })
 
 const transitionName = computed(()=> {
@@ -196,13 +199,13 @@ function openOptions() {
 
 <template>
     <div
-        v-if="options.enabledSearch || options.showSettingsButton || (currentTab === 1 && !options.showUserGroupsOnly)"
+        v-if="options.enabledSearch || options.showSettingsButton || showGroupCollapseButton"
         class="search-container"
     >
         <ExtInput v-if="options.enabledSearch" class="search-container__field" v-model:value="searchTerm" />
 
         <ExtIconButton
-            v-if="currentTab === 1 && !options.showUserGroupsOnly"
+            v-if="showGroupCollapseButton"
             class="search-container__action"
             :disabled="userGroupIdsWithExtensions.length === 0"
             :aria-label="toggleAllGroupsLabel"

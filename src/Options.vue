@@ -78,6 +78,7 @@ function setUserGroups(userGroups: UserGroupInfo[]) {
         <KrSection :title="msg('groups')">
             <KrLinkRow :title="msg('set_up_user_groups')" :link="customizeUrl" />
             <KrToggleRow v-if="userGroupSetup.length > 0" :title="msg('show_user_groups_only')" v-model="options.showUserGroupsOnly" />
+            <KrToggleRow v-if="userGroupSetup.length > 0" :title="msg('show_group_collapse_button')" v-model="options.showGroupCollapseButton" />
             <ExtGroupBackup :groups="userGroupSetup" :extensions="extensions" @import="setUserGroups" />
         </KrSection>
 

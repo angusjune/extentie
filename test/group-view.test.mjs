@@ -191,6 +191,17 @@ describe('searchGroups', () => {
         assert.deepEqual(names(searchGroups('ADBLOCK', groups).get('g1')), ['Adblock Plus'])
     })
 
+    test('matches a group name in a user-group view and keeps all of its extensions', () => {
+        const found = searchGroups('woRK', groups, true)
+
+        assert.deepEqual([...found.keys()], ['g1'])
+        assert.deepEqual(names(found.get('g1')), ['Adblock Plus', 'Bitwarden'])
+    })
+
+    test('does not match a group name in the All view', () => {
+        assert.equal(searchGroups('work', groups).size, 0)
+    })
+
     test('puts a name that starts with the term first', () => {
         const withBoth = new Map([['g1', {
             id: 'g1',

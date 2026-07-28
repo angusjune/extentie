@@ -67,6 +67,10 @@
   "show_user_groups_only": {
     "message": "仅显示你设置的分组"
   },
+  "show_group_collapse_button": {
+    "description": "toggles the popup button that collapses or expands every group",
+    "message": "显示展开/折叠所有分组按钮"
+  },
   "show_search": {
     "message": "显示搜索框"
   },

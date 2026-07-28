@@ -14,6 +14,7 @@ declare interface ExtentieOptions {
   showExtensionDescriptionOnHover: boolean;
   highlightSideLoadExtensions: boolean;
   showEnableAllButton: boolean;
+  showGroupCollapseButton: boolean;
   popupHeight: number;
   layout: 'default' | 'compact' | 'comfortable',
   collapsed: string,
@@ -53,4 +54,3 @@ declare enum MessageType {
   SET_ENABLED = 'SET_ENABLED',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
 }
-

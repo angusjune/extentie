@@ -63,6 +63,10 @@
   "show_user_groups_only": {
     "message": "Show your groups only"
   },
+  "show_group_collapse_button": {
+    "description": "toggles the popup button that collapses or expands every group",
+    "message": "Show collapse/expand groups button"
+  },
   "show_search": {
     "message": "Show search bar"
   },

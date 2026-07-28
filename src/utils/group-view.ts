@@ -104,14 +104,24 @@ export function searchExtensions(term: string, extensions: Extension[]): Extensi
 }
 
 /**
- * The groups holding an extension whose name matches, with the closest matches first.
- * A group with no match is left out entirely.
+ * Groups which hold an extension whose name matches, with the closest matches first.
+ * When `includeGroupNames` is set for a user-group view, a matching group name keeps
+ * all of that group's extensions.
  */
-export function searchGroups(term: string, groups: ExtensionGroups): ExtensionGroups {
+export function searchGroups(
+    term: string,
+    groups: ExtensionGroups,
+    includeGroupNames = false,
+): ExtensionGroups {
     const needle = lower(term)
     const found: ExtensionGroups = new Map()
 
     for (const [id, group] of groups) {
+        if (includeGroupNames && lower(group.name ?? '').includes(needle)) {
+            found.set(id, { ...group, extensions: [...group.extensions] })
+            continue
+        }
+
         const extensions = group.extensions
             .filter(extension => lower(extension.name).includes(needle))
             .sort((a, b) => Number(lower(b.name).startsWith(needle)) - Number(lower(a.name).startsWith(needle)))
