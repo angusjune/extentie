@@ -3,7 +3,12 @@ import { watch, ref, shallowRef, reactive, computed } from 'vue'
 import { SystemGroupIds, type ExtensionGroups } from './ExtensionGroup'
 import { groupByType, groupByUserGroups, ungrouped, searchGroups, carryOrderForward } from '@/utils/group-view'
 import { sanitizeGroupIds } from '@/utils/group-id'
-import { parseCollapsedGroups, serializeCollapsedGroups } from '@/utils/collapsed-groups'
+import {
+    addCollapsedGroups,
+    parseCollapsedGroups,
+    removeCollapsedGroups,
+    serializeCollapsedGroups,
+} from '@/utils/collapsed-groups'
 import ExtInput from '@/components/ExtTextField.vue'
 import ExtList from '@/components/ExtList.vue'
 import ExtGroup from '@/components/ExtGroup.vue'
@@ -11,6 +16,8 @@ import ExtTabBar from '@/components/ExtTabBar.vue'
 import ExtEmpty from '@/components/ExtEmpty.vue'
 import ExtIconButton from '@/components/ExtIconButton.vue'
 import Settings from '~icons/material-symbols/settings-rounded'
+import CollapseAll from '~icons/material-symbols/unfold-less-rounded'
+import ExpandAll from '~icons/material-symbols/unfold-more-rounded'
 import { msg } from '@/utils/i18n'
 
 type Extension = chrome.management.ExtensionInfo
@@ -129,6 +136,27 @@ const defaultExtensionGroups = computed<ExtensionGroups>(
 const userExtensionGroups = computed<ExtensionGroups>(
     () => groupByUserGroups(extensions.value, userGroupSetup.value))
 
+const userGroupIdsWithExtensions = computed(() =>
+    [...userExtensionGroups.value]
+        .filter(([, group]) => group.extensions.length > 0)
+        .map(([id]) => id))
+
+const allGroupsCollapsed = computed(() =>
+    userGroupIdsWithExtensions.value.length > 0
+    && userGroupIdsWithExtensions.value.every(id => collapsed.value.includes(id)))
+
+const toggleAllGroupsLabel = computed(() =>
+    allGroupsCollapsed.value ? msg('expand_all_groups') : msg('collapse_all_groups'))
+
+function toggleAllGroupsCollapsed() {
+    if (userGroupIdsWithExtensions.value.length === 0) return
+
+    collapsed.value = allGroupsCollapsed.value
+        ? removeCollapsedGroups(collapsed.value, userGroupIdsWithExtensions.value)
+        : addCollapsedGroups(collapsed.value, userGroupIdsWithExtensions.value)
+    chrome.runtime.sendMessage({ type: "SET_OPTIONS", data: { collapsed: serializeCollapsedGroups(collapsed.value) } })
+}
+
 const notGroupedByUser = computed(
     () => ungrouped(extensions.value, userGroupSetup.value, msg('others')))
 
@@ -167,12 +195,27 @@ function openOptions() {
 </script>
 
 <template>
-    <div v-if="options.enabledSearch || options.showSettingsButton" class="search-container">
+    <div
+        v-if="options.enabledSearch || options.showSettingsButton || (currentTab === 1 && !options.showUserGroupsOnly)"
+        class="search-container"
+    >
         <ExtInput v-if="options.enabledSearch" class="search-container__field" v-model:value="searchTerm" />
 
         <ExtIconButton
+            v-if="currentTab === 1 && !options.showUserGroupsOnly"
+            class="search-container__action"
+            :disabled="userGroupIdsWithExtensions.length === 0"
+            :aria-label="toggleAllGroupsLabel"
+            :title="toggleAllGroupsLabel"
+            @click="toggleAllGroupsCollapsed"
+        >
+            <ExpandAll v-if="allGroupsCollapsed" />
+            <CollapseAll v-else />
+        </ExtIconButton>
+
+        <ExtIconButton
             v-if="options.showSettingsButton"
-            class="search-container__settings"
+            class="search-container__action"
             :aria-label="msg('open_option')"
             :title="msg('open_option')"
             @click="openOptions"
@@ -254,7 +297,7 @@ function openOptions() {
         min-width: 0;
     }
 
-    &__settings {
+    &__action {
         flex: none;
         color: var(--on-surface-secondary);
         opacity: 0.5;
@@ -262,6 +305,10 @@ function openOptions() {
 
         &:hover, &:focus, &:focus-visible {
             opacity: 0.8;
+        }
+
+        &:disabled {
+            opacity: 0.25;
         }
     }
 }

@@ -25,3 +25,12 @@ export function parseCollapsedGroups(stored: unknown): string[] {
 export function serializeCollapsedGroups(ids: string[]): string {
     return JSON.stringify(ids)
 }
+
+export function addCollapsedGroups(collapsed: string[], ids: string[]): string[] {
+    return [...new Set([...collapsed, ...ids])]
+}
+
+export function removeCollapsedGroups(collapsed: string[], ids: string[]): string[] {
+    const expanded = new Set(ids)
+    return collapsed.filter(id => !expanded.has(id))
+}

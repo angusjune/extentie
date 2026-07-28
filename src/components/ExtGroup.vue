@@ -94,6 +94,7 @@ function focusPrev() {
         top: 0;
         background: var(--surface);
         z-index: 1;
+        touch-action: manipulation;
 
         &:hover, &:focus-within {
             background-image: linear-gradient(90deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);

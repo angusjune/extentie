@@ -1,6 +1,11 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseCollapsedGroups, serializeCollapsedGroups } from '@/utils/collapsed-groups'
+import {
+    addCollapsedGroups,
+    parseCollapsedGroups,
+    removeCollapsedGroups,
+    serializeCollapsedGroups,
+} from '@/utils/collapsed-groups'
 
 describe('parseCollapsedGroups', () => {
     test('reads the JSON text written today', () => {
@@ -41,5 +46,24 @@ describe('serializeCollapsedGroups', () => {
 
     test('round trips nothing', () => {
         assert.deepEqual(parseCollapsedGroups(serializeCollapsedGroups([])), [])
+    })
+})
+
+describe('addCollapsedGroups', () => {
+    test('keeps existing collapsed groups and adds each requested group once', () => {
+        assert.deepEqual(addCollapsedGroups(['extensions', 'work'], ['work', 'personal']), [
+            'extensions',
+            'work',
+            'personal',
+        ])
+    })
+})
+
+describe('removeCollapsedGroups', () => {
+    test('expands only the requested groups', () => {
+        assert.deepEqual(
+            removeCollapsedGroups(['extensions', 'work', 'personal'], ['work', 'personal']),
+            ['extensions'],
+        )
     })
 })

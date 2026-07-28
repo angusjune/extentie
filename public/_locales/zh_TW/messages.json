@@ -112,6 +112,14 @@
     "description": "tab name",
     "message": "分組"
   },
+  "collapse_all_groups": {
+    "description": "tooltip and accessible name for the popup button that collapses every group",
+    "message": "收合所有分組"
+  },
+  "expand_all_groups": {
+    "description": "tooltip and accessible name for the popup button that expands every group",
+    "message": "展開所有分組"
+  },
 
   "others": {
     "description": "group name",

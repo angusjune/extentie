@@ -106,6 +106,14 @@
     "description": "tab name",
     "message": "Groups"
   },
+  "collapse_all_groups": {
+    "description": "tooltip and accessible name for the popup button that collapses every group",
+    "message": "Collapse all groups"
+  },
+  "expand_all_groups": {
+    "description": "tooltip and accessible name for the popup button that expands every group",
+    "message": "Expand all groups"
+  },
   "others": {
     "description": "group name",
     "message": "Others"
