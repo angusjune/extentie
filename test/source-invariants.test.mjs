@@ -94,6 +94,17 @@ describe('popup templates', () => {
         assert.match(handler, /queueMicrotask\(\(\) => item\.remove\(\)\)/)
     })
 
+    test('the group set up page offers a non-drag move path', async () => {
+        const source = await read('src/Customize.vue')
+        const selectionBindings = source.match(/@update:selected="setExtensionSelected/g) ?? []
+        const disabledSortables = source.match(/disabled:\s*selectionMode/g) ?? []
+
+        assert.match(source, /moveExtensionsToGroup/)
+        assert.match(source, /v-model="destinationGroupId"/)
+        assert.equal(selectionBindings.length, 2, 'not every extension list supports selection')
+        assert.equal(disabledSortables.length, 3, 'dragging remains active during selection')
+    })
+
     test('the view leaves the Groups tab when the tab bar does', async () => {
         const source = await read('src/Popup.vue')
         const script = source.slice(0, source.indexOf('<template>'))

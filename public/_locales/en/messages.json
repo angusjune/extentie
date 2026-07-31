@@ -135,6 +135,46 @@
   "drop_here": {
     "message": "Drop here"
   },
+  "select_extensions": {
+    "message": "Batch move"
+  },
+  "select_extension": {
+    "description": "accessible label for selecting an extension on the group set up page",
+    "message": "Select $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Adblock"
+      }
+    }
+  },
+  "selected_extensions": {
+    "description": "$COUNT$ is the number of extensions selected on the group set up page",
+    "message": "$COUNT$ selected",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "move_to_group": {
+    "message": "Move to group…"
+  },
+  "move": {
+    "description": "button label",
+    "message": "Move"
+  },
+  "move_done": {
+    "description": "$GROUP$ is the destination group name",
+    "message": "Moved selected extensions to $GROUP$.",
+    "placeholders": {
+      "group": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
+  },
   "delete_group": {
     "description": "delete button label and confirmation dialog title on the group set up page",
     "message": "Delete group"

@@ -142,6 +142,46 @@
   "drop_here": {
     "message": "拖至此处"
   },
+  "select_extensions": {
+    "message": "批量移动"
+  },
+  "select_extension": {
+    "description": "accessible label for selecting an extension on the group set up page",
+    "message": "选择「$NAME$」",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "广告拦截器"
+      }
+    }
+  },
+  "selected_extensions": {
+    "description": "$COUNT$ is the number of extensions selected on the group set up page",
+    "message": "已选择 $COUNT$ 个",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "move_to_group": {
+    "message": "移动到分组…"
+  },
+  "move": {
+    "description": "button label",
+    "message": "移动"
+  },
+  "move_done": {
+    "description": "$GROUP$ is the destination group name",
+    "message": "已将所选扩展移动到「$GROUP$」。",
+    "placeholders": {
+      "group": {
+        "content": "$1",
+        "example": "工作"
+      }
+    }
+  },
   "delete_group": {
     "description": "delete button label and confirmation dialog title on the group set up page",
     "message": "删除分组"

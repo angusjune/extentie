@@ -21,14 +21,20 @@ const props = withDefaults(defineProps<{
     icons?: chrome.management.IconInfo[],
     highlight?: boolean,
     showActions?: boolean,
+    selectable?: boolean,
+    selected?: boolean,
+    selectionLabel?: string,
 }>(), {
     showActions: true,
     highlight: false,
     mayEnable: true,
+    selectable: false,
+    selected: false,
 })
 
 const emit = defineEmits<{
-  (e: 'update:enabled', value: typeof props.enabled): void
+    (e: 'update:enabled', value: typeof props.enabled): void
+    (e: 'update:selected', value: boolean): void
 }>()
 
 // Vue maps .delete to Backspace as well as Delete, and the set up page renders rows
@@ -58,6 +64,24 @@ const _enabled = computed({
     set(value) { emit('update:enabled', value) },
 })
 
+const _selected = computed({
+    get() { return props.selected },
+    set(value) { emit('update:selected', value) },
+})
+
+function onActivate() {
+    if (props.selectable) {
+        _selected.value = !_selected.value
+        return
+    }
+
+    if (props.showActions) _enabled.value = !_enabled.value
+}
+
+function onRowClick() {
+    if (props.selectable) _selected.value = !_selected.value
+}
+
 // Chrome has to run its own confirmation for these, so the toggle opens its
 // extensions page rather than enabling the extension here.
 const needsPermissionReview = computed(() => !props.enabled && props.disabledReason === 'permissions_increase')
@@ -69,13 +93,27 @@ const tooltip = computed(() => needsPermissionReview.value ? msg('needs_permissi
     <div 
         :id="id" 
         class="list" 
-        :class="{'list--disabled': !_enabled && showActions, 'list--highlight': highlight}" 
+        :class="{
+            'list--disabled': !_enabled && showActions,
+            'list--highlight': highlight,
+            'list--selected': selectable && _selected,
+            'list--selectable': selectable,
+        }"
         role="listitem" 
-        tabindex="0"
+        :tabindex="selectable ? -1 : 0"
         :title="tooltip"
-        @keydown.enter="_enabled = !_enabled"
+        @click="onRowClick"
+        @keydown.enter.prevent="onActivate"
         @keydown.delete="onDelete"
     >
+        <input
+            v-if="selectable"
+            class="list__selection"
+            type="checkbox"
+            v-model="_selected"
+            :aria-label="selectionLabel || title"
+            @click.stop
+        />
         <ExtCheckbox :disabled="_enabled ? !mayDisable : !mayEnable" v-model="_enabled" v-if="showActions" :aria-labelledby="`label-${id}`" />
         <label class="list__content" :id="`label-${id}`">
             <input class="list__native-input" type="checkbox" v-model="_enabled" :disabled="!showActions" />
@@ -126,6 +164,14 @@ const tooltip = computed(() => needsPermissionReview.value ? msg('needs_permissi
         .show-on-hover {
             display: block;
         }
+    }
+
+    &--selectable {
+        cursor: pointer;
+    }
+
+    &--selected {
+        background: var(--ripple);
     }
 
     &--disabled {
@@ -182,6 +228,19 @@ const tooltip = computed(() => needsPermissionReview.value ? msg('needs_permissi
 
     &__native-input {
         display: none;
+    }
+
+    &__selection {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        accent-color: var(--theme);
+        cursor: pointer;
+
+        &:focus-visible {
+            outline: 2px solid var(--theme);
+            outline-offset: 2px;
+        }
     }
 
     &__actions {
